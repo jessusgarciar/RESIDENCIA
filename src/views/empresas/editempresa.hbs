@@ -1,0 +1,66 @@
+<div class="container p-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h3 class="text-uppercase">Editar Empresa</h3>
+                    <div class="card-body">
+                        <form action="/empresas/edit/{{rows.id}}" method="post">
+                        <div class="input-group mt-2">
+                            <label for="nombre" class="input-group-text">Nombre de la empresa</label>
+                            <input class="form-control" type="text" name="nombre" id="nombre" value="{{rows.nombre}}" placeholder="Ejemplo: Coca-Cola Inc." required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="atencion_a" class="input-group-text">Atencion a</label>
+                            <input class="form-control" type="text" name="atencion_a" id="atencion_a" value="{{rows.atencion_a}}" placeholder="Ejemplo: Juan Perez" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="giro_sector" class="input-group-text">Giro</label>
+                            <input class="form-control" type="text" name="giro_sector" id="giro_sector" value="{{rows.giro_sector}}" placeholder="Ejemplo: Bebidas" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="domicilio" class="input-group-text">Domicilio</label>
+                            <input class="form-control" type="text" name="domicilio" id="domicilio" value="{{rows.domicilio}}" placeholder="Ejemplo: Calle 123" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="colonia" class="input-group-text">Colonia</label>
+                            <input class="form-control" type="text" name="colonia" id="colonia" value="{{rows.colonia}}" placeholder="Ejemplo: Centro" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="ciudad" class="input-group-text">Ciudad</label>
+                            <input class="form-control" type="text" name="ciudad" id="ciudad" value="{{rows.ciudad}}" placeholder="Ejemplo: Ciudad de Mexico" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="mision" class="input-group-text">Mision</label>
+                            <input class="form-control" type="text" name="mision" id="mision" value="{{rows.mision}}" placeholder="Ejemplo: Ser la mejor empresa de bebidas" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="codigo_postal" class="input-group-text">Codigo Postal</label>
+                            <input class="form-control" type="text" name="codigo_postal" id="codigo_postal" value="{{rows.codigo_postal}}" placeholder="Ejemplo: 12345" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="titular_nombre" class="input-group-text">Nombre del titular</label>
+                            <input class="form-control" type="text" name="titular_nombre" id="titular_nombre" value="{{rows.titular_nombre}}" placeholder="Ejemplo: Juan Perez" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="titular_puesto" class="input-group-text">Puesto del titular</label>
+                            <input class="form-control" type="text" name="titular_puesto" id="titular_puesto" value="{{rows.titular_puesto}}" placeholder="Ejemplo: Gerente General" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="firmante_nombre" class="input-group-text">Nombre del firmante</label>
+                            <input class="form-control" type="text" name="firmante_nombre" id="firmante_nombre" value="{{rows.firmante_nombre}}" placeholder="Ejemplo: Juan Perez" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="firmante_puesto" class="input-group-text">Puesto del firmante</label>
+                            <input class="form-control" type="text" name="firmante_puesto" id="firmante_puesto" value="{{rows.firmante_puesto}}" placeholder="Ejemplo: Gerente General" required>
+                        </div>
+                        <div class="card-footer text-center d-grid gap-2">
+                            <button class="btn btn-primary" type="submit">Actualizar</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,101 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <h5 class="mb-0">Notificaciones recientes</h5>
+            <small class="text-muted">Alertas generadas por los alumnos</small>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="adminRefreshNotifications" title="Actualizar">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+        <div class="list-group list-group-flush" id="adminNotificationsList">
+          <div class="list-group-item text-center text-muted py-4">Cargando notificaciones...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const listEl = document.getElementById('adminNotificationsList');
+  const refreshBtn = document.getElementById('adminRefreshNotifications');
+  const state = { notifications: [] };
+
+  const toneClass = (tipo = 'info') => {
+    const normalized = String(tipo).toLowerCase();
+    switch (normalized) {
+      case 'aprobacion':
+        return 'badge bg-success';
+      case 'denegacion':
+        return 'badge bg-warning text-dark';
+      case 'comentario':
+        return 'badge bg-info text-dark';
+      default:
+        return 'badge bg-primary';
+    }
+  };
+
+  const renderList = () => {
+    if (!state.notifications.length) {
+      listEl.innerHTML = '<div class="list-group-item text-center text-muted py-4">No hay notificaciones pendientes.</div>';
+      return;
+    }
+    listEl.innerHTML = state.notifications.map((notif) => `
+      <div class="list-group-item d-flex justify-content-between align-items-start gap-3" data-id="${notif.id}">
+        <div>
+          <span class="${toneClass(notif.tipo)} text-uppercase">${notif.tipo}</span>
+          <div class="mt-2">${notif.mensaje || 'Notificación sin detalle.'}</div>
+          <small class="text-muted">${notif.created_label || ''}</small>
+        </div>
+        <button class="btn btn-sm btn-link text-danger" data-action="delete" data-id="${notif.id}">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>`).join('');
+  };
+
+  const loadNotifications = async () => {
+    try {
+      const resp = await fetch('/notifications/list');
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'No se pudieron obtener las notificaciones');
+      state.notifications = data.notifications || [];
+      renderList();
+    } catch (err) {
+      console.error('Error cargando notificaciones admin:', err);
+      listEl.innerHTML = '<div class="list-group-item text-center text-danger py-4">Error cargando notificaciones.</div>';
+    }
+  };
+
+  const deleteNotification = async (id) => {
+    if (!id) return;
+    try {
+      const resp = await fetch(`/notifications/${id}`, { method: 'DELETE' });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'No se pudo eliminar la notificación');
+      state.notifications = state.notifications.filter((n) => String(n.id) !== String(id));
+      renderList();
+      window.NotificationCenter?.refreshNotifications?.();
+    } catch (err) {
+      console.error('Error eliminando notificación admin:', err);
+      alert(err.message || 'Error eliminando la notificación');
+    }
+  };
+
+  listEl?.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-action="delete"]');
+    if (!btn) return;
+    deleteNotification(btn.dataset.id);
+  });
+
+  refreshBtn?.addEventListener('click', (event) => {
+    event.preventDefault();
+    loadNotifications();
+  });
+
+  loadNotifications();
+});
+</script>

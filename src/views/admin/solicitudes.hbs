@@ -1,0 +1,861 @@
+﻿{{! Interfaz combinada: gestion de solicitudes, PDFs y comentarios para admin/jefe }}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-10 offset-lg-1">
+      <!-- Header mejorado -->
+      <div class="mb-4">
+        <h3 class="mb-2">
+          <i class="bi bi-folder2-open me-2 text-primary"></i>
+          Solicitudes y PDFs
+        </h3>
+        <p class="text-muted mb-0">Gestionar estatus, revisar versiones de PDF, enviar comentarios y consultar historial.</p>
+      </div>
+
+      {{#if solicitudes.length}}
+        {{#each solicitudes}}
+          <div class="card shadow-sm mb-4 solicitud-card" data-solicitud-card="{{solicitud_id}}" data-solicitud-status="{{solicitud_estatus}}">
+            <!-- Card Header mejorado -->
+            <div class="card-header bg-white border-bottom py-3">
+              <div class="row align-items-center">
+                <div class="col-lg-8">
+                  <div class="d-flex align-items-start gap-3">
+                    <div class="student-avatar">
+                      <i class="bi bi-person-circle text-primary"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="mb-1 fw-bold">{{alumno_nombre}}</h5>
+                      <div class="text-muted small mb-2">
+                        <i class="bi bi-hash me-1"></i>{{num_control}}
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-mortarboard me-1"></i>{{carrera}}
+                      </div>
+                      <div class="project-name">
+                        <i class="bi bi-briefcase me-1"></i>
+                        <strong>{{nombre_proyecto}}</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                  <div class="d-flex flex-column gap-2 align-items-lg-end">
+                    <div class="d-flex gap-2 flex-wrap justify-content-lg-end">
+                      <span class="badge status-badge {{solicitud_badge_class}}" data-role="solicitud-status">
+                        <i class="bi bi-circle-fill me-1" style="font-size: 0.6rem;"></i>
+                        {{solicitud_estatus}}
+                      </span>
+                      {{#if pdf_info_estatus}}
+                        <span class="badge status-badge {{pdf_info_badge_class}}" data-role="pdf-status">
+                          <i class="bi bi-file-pdf me-1"></i>
+                          {{pdf_info_estatus}}
+                        </span>
+                      {{/if}}
+                    </div>
+                    {{#if last_uploaded_at}}
+                      <div class="small text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        {{last_uploaded_at}}
+                      </div>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Card Body mejorado -->
+            <div class="card-body">
+              <!-- Stats Row -->
+              <div class="stats-row mb-4">
+                <div class="stat-item">
+                  <i class="bi bi-calendar3 text-primary"></i>
+                  <div>
+                    <div class="stat-label">Solicitada</div>
+                    <div class="stat-value">{{fecha_solicitud}}</div>
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <i class="bi bi-file-earmark text-success"></i>
+                  <div>
+                    <div class="stat-label">Documentos</div>
+                    <div class="stat-value">{{docs_count}}</div>
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <i class="bi bi-arrow-repeat text-warning"></i>
+                  <div>
+                    <div class="stat-label">Reenvíos</div>
+                    <div class="stat-value">{{reenvios_count}}</div>
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <i class="bi bi-chat-dots text-info"></i>
+                  <div>
+                    <div class="stat-label">Comentarios</div>
+                    <div class="stat-value">{{comments_count}}</div>
+                  </div>
+                </div>
+                <div class="ms-auto">
+                  <button type="button" class="btn btn-outline-primary btn-sm btn-doc-history" data-documents="{{documents_overview_json}}">
+                    <i class="bi bi-clock-history me-1"></i>
+                    Historial ({{documents_overview.length}})
+                  </button>
+                </div>
+              </div>
+
+              <!-- Documents Table -->
+              <h6 class="fw-semibold mb-3">
+                <i class="bi bi-files me-2"></i>
+                Documentos actuales
+              </h6>
+              {{#if docs.length}}
+                <div class="table-responsive">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                      <tr>
+                        <th scope="col" class="border-0">Tipo</th>
+                        <th scope="col" class="border-0">Archivo</th>
+                        <th scope="col" class="border-0">Subido por</th>
+                        <th scope="col" class="border-0">Fecha</th>
+                        <th scope="col" class="text-center border-0">Acciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{#each docs}}
+                        <tr>
+                          <td>
+                            <span class="badge bg-light text-dark">{{type_label}}</span>
+                          </td>
+                          <td class="text-truncate" style="max-width: 250px;" title="{{filename}}">
+                            <i class="bi bi-file-pdf text-danger me-1"></i>
+                            {{filename}}
+                          </td>
+                          <td>
+                            <i class="bi bi-person me-1"></i>
+                            {{uploaded_by}}
+                          </td>
+                          <td class="text-muted small">{{uploaded_at}}</td>
+                          <td class="text-center">
+                            <div class="btn-group btn-group-sm" role="group">
+                              <button type="button" class="btn btn-outline-primary btn-view" data-doc-id="{{id}}" data-doc-source="{{#if source}}{{source}}{{else}}active{{/if}}">
+                                <i class="bi bi-eye me-1"></i>
+                                Ver
+                              </button>
+                              <button type="button" class="btn btn-outline-secondary btn-download" data-doc-id="{{id}}" data-doc-source="{{#if source}}{{source}}{{else}}active{{/if}}">
+                                <i class="bi bi-download me-1"></i>
+                                Descargar
+                              </button>
+                              <button type="button" class="btn btn-outline-danger btn-delete" data-doc-id="{{id}}" data-doc-source="{{#if source}}{{source}}{{else}}active{{/if}}">
+                                <i class="bi bi-trash me-1"></i>
+                                Eliminar
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      {{/each}}
+                    </tbody>
+                  </table>
+                </div>
+              {{else}}
+                <div class="alert alert-light border mb-0" role="alert">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Sin documentos cargados por el momento.
+                </div>
+              {{/if}}
+            </div>
+
+            <!-- Card Footer mejorado -->
+            <div class="card-footer bg-light border-top d-flex flex-wrap justify-content-between align-items-center gap-3 py-3">
+              <div class="text-muted small">
+                <i class="bi bi-key me-1"></i>
+                ID: {{solicitud_id}}
+              </div>
+              <div class="btn-group" role="group">
+                {{#if ../isJefe}}
+                  {{#if can_assign}}
+                    <a href="/admin/solicitudes/{{solicitud_id}}/asignar-asesor" class="btn btn-info">
+                      <i class="bi bi-person-plus me-1"></i>
+                      Asignar asesor
+                    </a>
+                  {{else}}
+                    <button type="button" class="btn btn-success btn-accept" data-solicitud="{{solicitud_id}}">
+                      <i class="bi bi-check-circle me-1"></i>
+                      Aceptar
+                    </button>
+                    <button type="button" class="btn btn-warning btn-deny" data-solicitud="{{solicitud_id}}">
+                      <i class="bi bi-x-circle me-1"></i>
+                      Denegar
+                    </button>
+                  {{/if}}
+                {{else}}
+                  <button type="button" class="btn btn-success btn-accept" data-solicitud="{{solicitud_id}}">
+                    <i class="bi bi-check-circle me-1"></i>
+                    Aceptar
+                  </button>
+                  <button type="button" class="btn btn-warning btn-deny" data-solicitud="{{solicitud_id}}">
+                    <i class="bi bi-x-circle me-1"></i>
+                    Denegar
+                  </button>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        {{/each}}
+      {{else}}
+        <div class="alert alert-info border-0 shadow-sm" role="alert">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-info-circle fs-3 me-3"></i>
+            <div>
+              <h5 class="alert-heading mb-1">No hay solicitudes</h5>
+              <p class="mb-0">No hay solicitudes registradas por el momento.</p>
+            </div>
+          </div>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+</div>
+
+<!-- Modals (sin cambios en estructura, solo mejoras visuales) -->
+<div class="modal fade" id="viewPdfModal" tabindex="-1" aria-labelledby="viewPdfModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title" id="viewPdfModalLabel">
+          <i class="bi bi-file-pdf text-danger me-2"></i>
+          Visualizar PDF
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body p-0" style="height: 75vh;">
+        <iframe id="pdfViewer" src="about:blank" title="PDF" class="w-100 h-100" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title">
+          <i class="bi bi-chat-left-text me-2"></i>
+          Comentarios de la solicitud
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group list-group-flush" id="commentsList"></ul>
+        <div class="mt-3 d-none" id="decisionCommentWrapper">
+          <label for="decisionCommentInput" class="form-label fw-semibold">Comentario para el alumno</label>
+          <textarea class="form-control" id="decisionCommentInput" rows="3" placeholder="Describe la retroalimentacion"></textarea>
+          <div class="invalid-feedback" id="decisionCommentError">Escribe un comentario antes de continuar.</div>
+          <div class="form-text">Se enviara junto con la decision seleccionada.</div>
+        </div>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" class="btn btn-success d-none" id="historyActionButton">Confirmar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="documentsModal" tabindex="-1" aria-labelledby="documentsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title">
+          <i class="bi bi-clock-history me-2"></i>
+          Historial de documentos
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" id="documentsOverviewTable">
+            <thead class="table-light">
+              <tr>
+                <th scope="col" class="border-0">Tipo</th>
+                <th scope="col" class="border-0">Archivo</th>
+                <th scope="col" class="border-0">Estatus</th>
+                <th scope="col" class="border-0">Subido por</th>
+                <th scope="col" class="border-0">Fecha</th>
+                <th scope="col" class="text-center border-0">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">Selecciona una solicitud para ver el detalle.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer border-top">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+/* Paleta de colores suave basada en navbar #233d7a */
+:root {
+  --primary-blue: #233d7a;
+  --primary-light: #3a5a9e;
+  --primary-lighter: #e8edf7;
+  --text-dark: #2c3e50;
+  --text-muted: #6c757d;
+  --bg-light: #f8f9fa;
+  --border-light: #dee2e6;
+  --success-soft: #d4edda;
+  --warning-soft: #fff3cd;
+  --danger-soft: #f8d7da;
+}
+
+/* Card de solicitud */
+.solicitud-card {
+  transition: all 0.2s ease;
+  border: 1px solid var(--border-light);
+}
+
+.solicitud-card:hover {
+  box-shadow: 0 4px 12px rgba(35, 61, 122, 0.08) !important;
+  transform: translateY(-2px);
+}
+
+/* Avatar del estudiante */
+.student-avatar i {
+  font-size: 2.5rem;
+  opacity: 0.6;
+  color: var(--primary-blue);
+}
+
+/* Nombre del proyecto */
+.project-name {
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+/* Status badges mejorados con colores suaves */
+.status-badge {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Stats row con fondo suave */
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: var(--primary-lighter);
+  border-radius: 8px;
+  align-items: center;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.stat-item i {
+  font-size: 1.5rem;
+  color: var(--primary-blue);
+  opacity: 0.8;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* Table improvements con colores suaves */
+.table-hover tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--primary-lighter);
+}
+
+/* Button improvements con colores del navbar */
+.btn {
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-group .btn {
+  transition: all 0.2s ease;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(0);
+  z-index: 1;
+}
+
+/* Icon buttons */
+.btn-group-sm .btn i {
+  font-size: 0.9rem;
+}
+
+/* Modal improvements */
+.modal-header {
+  background: var(--bg-light);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.modal-title i {
+  opacity: 0.7;
+  color: var(--primary-blue);
+}
+
+/* Alert improvements con colores suaves */
+.alert {
+  border-left: 4px solid;
+}
+
+.alert-info {
+  border-left-color: var(--primary-blue);
+  background-color: var(--primary-lighter);
+  color: var(--text-dark);
+}
+
+.alert-light {
+  border-left-color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .stats-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .stat-item {
+    width: 100%;
+  }
+  
+  .student-avatar {
+    display: none;
+  }
+}
+</style>
+
+<script>
+// JavaScript sin cambios - mantener el código existente
+document.addEventListener('DOMContentLoaded', () => {
+  const viewModalEl = document.getElementById('viewPdfModal');
+  const historyModalEl = document.getElementById('historyModal');
+  const documentsModalEl = document.getElementById('documentsModal');
+
+  const viewModal = viewModalEl ? new bootstrap.Modal(viewModalEl) : null;
+  const historyModal = historyModalEl ? new bootstrap.Modal(historyModalEl) : null;
+  const documentsModal = documentsModalEl ? new bootstrap.Modal(documentsModalEl) : null;
+
+  const historyModalTitle = historyModalEl ? historyModalEl.querySelector('.modal-title') : null;
+  const historyActionButton = document.getElementById('historyActionButton');
+  const commentsList = document.getElementById('commentsList');
+  const decisionCommentWrapper = document.getElementById('decisionCommentWrapper');
+  const decisionCommentInput = document.getElementById('decisionCommentInput');
+
+  const getSolicitudCard = (solicitudId) => document.querySelector(`[data-solicitud-card="${solicitudId}"]`);
+
+  const toggleDecisionComment = (visible, action = '') => {
+    if (!decisionCommentWrapper || !decisionCommentInput) return;
+    decisionCommentWrapper.classList.toggle('d-none', !visible);
+    decisionCommentInput.classList.remove('is-invalid');
+    if (!visible) {
+      decisionCommentInput.value = '';
+      decisionCommentInput.disabled = false;
+      decisionCommentInput.dataset.mode = '';
+      decisionCommentInput.placeholder = 'Describe la retroalimentacion';
+      return;
+    }
+    decisionCommentInput.value = '';
+    decisionCommentInput.disabled = false;
+    decisionCommentInput.dataset.mode = action;
+    decisionCommentInput.placeholder = action === 'accept'
+      ? 'Comparte la retroalimentacion antes de aprobar.'
+      : 'Explica el motivo de la denegacion.';
+  };
+
+  const toggleDecisionButtons = (solicitudId, options = {}) => {
+    const { visible = true, disabled = false } = options;
+    const card = getSolicitudCard(solicitudId);
+    if (!card) return [];
+    const buttons = Array.from(card.querySelectorAll('.btn-accept, .btn-deny'));
+    buttons.forEach((btn) => {
+      btn.disabled = disabled;
+      btn.classList.toggle('disabled', disabled);
+      btn.classList.toggle('d-none', !visible);
+    });
+    return buttons;
+  };
+
+  const applyDecisionResult = (solicitudId, action) => {
+    const card = getSolicitudCard(solicitudId);
+    if (!card) return;
+    const badges = [];
+    const statusBadge = card.querySelector('[data-role="solicitud-status"]');
+    if (statusBadge) badges.push(statusBadge);
+    const pdfBadge = card.querySelector('[data-role="pdf-status"]');
+    if (pdfBadge) badges.push(pdfBadge);
+
+    const nextClass = action === 'accept' ? 'bg-success' : 'bg-danger';
+    const nextLabel = action === 'accept' ? 'aprobada' : 'rechazada';
+    badges.forEach((badge) => {
+      badge.classList.remove('bg-success', 'bg-danger', 'bg-primary', 'bg-secondary', 'bg-warning');
+      badge.classList.add(nextClass);
+      badge.textContent = nextLabel;
+    });
+
+    card.dataset.solicitudStatus = nextLabel;
+    toggleDecisionButtons(solicitudId, { visible: false, disabled: true });
+  };
+
+  const resetHistoryAction = () => {
+    if (historyActionButton) {
+      historyActionButton.classList.add('d-none');
+      historyActionButton.dataset.action = '';
+      historyActionButton.dataset.solicitudId = '';
+      historyActionButton.dataset.defaultText = '';
+      historyActionButton.disabled = false;
+    }
+    toggleDecisionComment(false);
+  };
+
+  const loadComments = async (solicitudId) => {
+    const resp = await fetch(`/admin/solicitudes/comments/${solicitudId}`);
+    if (!resp.ok) throw new Error('No se pudieron obtener los comentarios');
+    const data = await resp.json();
+    if (!data.ok) throw new Error('Respuesta invalida');
+    return data.comments || [];
+  };
+
+  const populateCommentsList = (comments) => {
+    if (!commentsList) return;
+    commentsList.innerHTML = '';
+    if (!comments.length) {
+      commentsList.innerHTML = '';
+      return;
+    }
+    comments.forEach((c) => {
+      const li = document.createElement('li');
+      li.className = 'list-group-item';
+      li.innerHTML = `<strong>${c.autor}</strong> <small class="text-muted">${c.created_at}</small><div>${c.comentario}</div>`;
+      commentsList.appendChild(li);
+    });
+  };
+
+  const showCommentsModal = async (solicitudId, mode = 'view') => {
+    if (!historyModal || !historyModalTitle || !commentsList) return;
+    try {
+      commentsList.innerHTML = '<li class="list-group-item">Cargando...</li>';
+      resetHistoryAction();
+      historyModalTitle.innerHTML = '<i class="bi bi-chat-left-text me-2"></i>Comentarios de la solicitud';
+
+      const comments = await loadComments(solicitudId);
+      populateCommentsList(comments);
+
+      if (mode === 'accept' || mode === 'deny') {
+        const accepting = mode === 'accept';
+        toggleDecisionComment(true, mode);
+        historyModalTitle.innerHTML = accepting
+          ? '<i class="bi bi-check-circle me-2"></i>Revisar comentarios antes de aceptar'
+          : '<i class="bi bi-x-circle me-2"></i>Revisar comentarios antes de denegar';
+        if (historyActionButton) {
+          historyActionButton.textContent = accepting ? 'Confirmar aceptacion' : 'Confirmar denegacion';
+          historyActionButton.dataset.defaultText = historyActionButton.textContent;
+          historyActionButton.classList.remove('btn-success', 'btn-warning');
+          historyActionButton.classList.add(accepting ? 'btn-success' : 'btn-warning');
+          historyActionButton.classList.remove('d-none');
+          historyActionButton.dataset.action = mode;
+          historyActionButton.dataset.solicitudId = solicitudId;
+        }
+        if (decisionCommentInput) {
+          setTimeout(() => {
+            if (decisionCommentInput.disabled) return;
+            decisionCommentInput.focus();
+          }, 150);
+        }
+      } else {
+        toggleDecisionComment(false);
+      }
+
+      historyModal.show();
+    } catch (err) {
+      console.error(err);
+      alert('No se pudieron cargar los comentarios');
+    }
+  };
+
+  historyActionButton?.addEventListener('click', async () => {
+    const action = historyActionButton.dataset.action;
+    const solicitudId = historyActionButton.dataset.solicitudId;
+    if (!action || !solicitudId) return;
+
+    const commentRequired = !!(decisionCommentWrapper && !decisionCommentWrapper.classList.contains('d-none'));
+    const comment = decisionCommentInput ? decisionCommentInput.value.trim() : '';
+    if (commentRequired && !comment) {
+      if (decisionCommentInput) {
+        decisionCommentInput.classList.add('is-invalid');
+        decisionCommentInput.focus();
+      }
+      return;
+    }
+
+    const confirmMsg = action === 'accept'
+      ? 'Confirmar aceptacion de la solicitud y enviar el comentario?'
+      : 'Confirmar denegacion de la solicitud y enviar el comentario?';
+    if (!confirm(confirmMsg)) return;
+
+    if (decisionCommentInput) decisionCommentInput.classList.remove('is-invalid');
+
+    const decisionButtons = toggleDecisionButtons(solicitudId, { disabled: true });
+    const originalText = historyActionButton.dataset.defaultText || historyActionButton.textContent;
+    historyActionButton.disabled = true;
+    historyActionButton.textContent = 'Procesando...';
+    if (decisionCommentInput) decisionCommentInput.disabled = true;
+
+    try {
+      if (commentRequired) {
+        const commentResp = await fetch('/admin/solicitudes/comment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ solicitud_id: solicitudId, comentario: comment })
+        });
+        const commentData = await commentResp.json().catch(() => ({}));
+        if (!commentResp.ok || !commentData.ok) {
+          throw new Error(commentData.error || 'No se pudo guardar el comentario');
+        }
+      }
+
+      const endpoint = action === 'accept' ? '/admin/solicitudes/accept' : '/admin/solicitudes/deny';
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ solicitud_id: solicitudId })
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (!resp.ok || !data.ok) {
+        throw new Error(data.error || 'Error procesando la solicitud');
+      }
+      applyDecisionResult(solicitudId, action);
+      historyModal?.hide();
+      alert(action === 'accept' ? 'Solicitud aceptada' : 'Solicitud denegada');
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'No se pudo completar la accion');
+      decisionButtons.forEach((btn) => {
+        btn.disabled = false;
+        btn.classList.remove('disabled');
+        btn.classList.remove('d-none');
+      });
+    } finally {
+      historyActionButton.disabled = false;
+      historyActionButton.textContent = originalText;
+      if (decisionCommentInput) {
+        decisionCommentInput.disabled = false;
+      }
+    }
+  });
+
+  historyModalEl?.querySelectorAll('[data-bs-dismiss="modal"]').forEach(btn => {
+    btn.addEventListener('click', resetHistoryAction);
+  });
+
+  historyModalEl?.addEventListener('hidden.bs.modal', resetHistoryAction);
+
+  decisionCommentInput?.addEventListener('input', () => {
+    decisionCommentInput.classList.remove('is-invalid');
+  });
+
+  const statusBadgeClass = (status = '') => {
+    const normalized = status.toLowerCase();
+    switch (normalized) {
+      case 'activo':
+      case 'aprobada':
+        return 'bg-success';
+      case 'pendiente':
+        return 'bg-primary';
+      case 'rechazada':
+        return 'bg-danger';
+      case 'archivado':
+      case 'historial':
+      default:
+        return 'bg-secondary';
+    }
+  };
+
+  const buildSolicitudMeta = (doc = {}) => {
+    if (!doc.solicitud_estatus && !doc.solicitud_fecha) return '';
+    const parts = [];
+    if (doc.solicitud_estatus) parts.push(`Solicitud ${doc.solicitud_estatus}`);
+    if (doc.solicitud_fecha) parts.push(doc.solicitud_fecha);
+    if (doc.solicitud_nombre) parts.push(`Proyecto: ${doc.solicitud_nombre}`);
+    if (doc.solicitud_id) parts.push(`ID ${doc.solicitud_id}`);
+    return parts.length
+      ? `<div class="small text-muted">${parts.join(' · ')}</div>`
+      : '';
+  };
+
+  const fetchViewUrl = async (id, source) => {
+    const endpoint = source === 'archive'
+      ? `/admin/solicitudes/archive/view/${id}`
+      : `/admin/solicitudes/view/${id}`;
+    const resp = await fetch(endpoint);
+    if (!resp.ok) throw new Error('Respuesta invalida');
+    const data = await resp.json();
+    if (!data.ok || !data.url) throw new Error('Sin URL');
+    return data.url;
+  };
+
+  const openPdf = async (id, source = 'active') => {
+    if (!viewModal) return;
+    try {
+      const url = await fetchViewUrl(id, source);
+      const viewer = document.getElementById('pdfViewer');
+      if (viewer) viewer.src = url;
+      viewModal.show();
+    } catch (err) {
+      console.error('Error abriendo PDF:', err);
+      alert('No se pudo abrir el PDF seleccionado');
+    }
+  };
+
+  const downloadPdf = (id, source = 'active') => {
+    const url = source === 'archive'
+      ? `/admin/solicitudes/archive/download/${id}`
+      : `/admin/solicitudes/download/${id}`;
+    window.open(url, '_blank');
+  };
+
+  document.querySelectorAll('.btn-view').forEach(btn => btn.addEventListener('click', () => {
+    const source = btn.dataset.docSource || 'active';
+    openPdf(btn.dataset.docId, source);
+  }));
+
+  document.querySelectorAll('.btn-download').forEach(btn => btn.addEventListener('click', () => {
+    const source = btn.dataset.docSource || 'active';
+    downloadPdf(btn.dataset.docId, source);
+  }));
+
+  document.querySelectorAll('.btn-delete').forEach(btn => {
+    const source = (btn.dataset.docSource || 'active').toLowerCase();
+    if (source !== 'active') {
+      btn.disabled = true;
+      btn.classList.add('disabled');
+      btn.title = 'Solo se pueden eliminar documentos activos';
+      return;
+    }
+    btn.addEventListener('click', async () => {
+      if (!confirm('Eliminar este PDF y su registro?')) return;
+      const id = btn.dataset.docId;
+      try {
+        const resp = await fetch(`/admin/solicitudes/pdf/${id}`, { method: 'DELETE' });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || 'No se pudo eliminar');
+        alert('Eliminado');
+        location.reload();
+      } catch (err) {
+        console.error(err);
+        alert(err.message || 'Error eliminando');
+      }
+    });
+  });
+
+  document.querySelectorAll('.btn-accept').forEach(btn => btn.addEventListener('click', () => {
+    showCommentsModal(btn.dataset.solicitud, 'accept');
+  }));
+
+  document.querySelectorAll('.btn-deny').forEach(btn => btn.addEventListener('click', () => {
+    showCommentsModal(btn.dataset.solicitud, 'deny');
+  }));
+
+  document.querySelectorAll('.btn-history').forEach(btn => btn.addEventListener('click', () => {
+    showCommentsModal(btn.dataset.solicitud, 'view');
+  }));
+
+  document.querySelectorAll('.btn-doc-history').forEach(btn => btn.addEventListener('click', () => {
+    if (!documentsModal || !documentsModalEl) return;
+    const tbody = documentsModalEl.querySelector('#documentsOverviewTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    let docs;
+    try {
+      const encoded = btn.dataset.documents || '[]';
+      docs = JSON.parse(decodeURIComponent(encoded));
+    } catch (err) {
+      console.error('Error parseando documentos:', err);
+      docs = [];
+    }
+    if (!Array.isArray(docs) || !docs.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Sin registros de documentos.</td></tr>';
+    } else {
+      docs.sort((a, b) => {
+        const aTime = a && a.uploaded_at_raw ? new Date(a.uploaded_at_raw).getTime() : 0;
+        const bTime = b && b.uploaded_at_raw ? new Date(b.uploaded_at_raw).getTime() : 0;
+        return bTime - aTime;
+      });
+      docs.forEach((doc) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="badge bg-light text-dark">${doc.type_label || ''}</span></td>
+          <td>${doc.filename || ''}${buildSolicitudMeta(doc)}</td>
+          <td><span class="badge ${statusBadgeClass(doc.status)} text-uppercase">${doc.status || ''}</span></td>
+          <td><i class="bi bi-person me-1"></i>${doc.uploaded_by || ''}</td>
+          <td class="text-muted small">${doc.uploaded_at || ''}</td>
+          <td class="text-center text-nowrap">
+            <div class="btn-group btn-group-sm" role="group">
+              <button type="button" class="btn btn-outline-primary btn-doc-view" data-doc-id="${doc.id}" data-doc-source="${doc.source || 'active'}">
+                <i class="bi bi-eye me-1"></i>Ver
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-doc-download" data-doc-id="${doc.id}" data-doc-source="${doc.source || 'active'}">
+                <i class="bi bi-download me-1"></i>Descargar
+              </button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      tbody.querySelectorAll('.btn-doc-view').forEach(actionBtn => actionBtn.addEventListener('click', () => {
+        openPdf(actionBtn.dataset.docId, actionBtn.dataset.docSource || 'active');
+      }));
+
+      tbody.querySelectorAll('.btn-doc-download').forEach(actionBtn => actionBtn.addEventListener('click', () => {
+        downloadPdf(actionBtn.dataset.docId, actionBtn.dataset.docSource || 'active');
+      }));
+    }
+
+    documentsModal.show();
+  }));
+
+  document.querySelectorAll('[data-solicitud-card]').forEach(card => {
+    const solicitudId = card.dataset.solicitudCard;
+    if (!solicitudId) return;
+    const statusBadge = card.querySelector('[data-role="solicitud-status"]');
+    const datasetStatus = card.dataset.solicitudStatus || '';
+    const statusText = statusBadge ? statusBadge.textContent : datasetStatus;
+    const normalized = (statusText || '').trim().toLowerCase();
+    if (normalized && normalized !== 'pendiente') {
+      toggleDecisionButtons(solicitudId, { visible: false, disabled: true });
+    }
+  });
+});
+</script>

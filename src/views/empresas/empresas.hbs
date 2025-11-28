@@ -1,0 +1,65 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h3 class="text-uppercase mb-0">Empresas</h3>
+                    <a href="/empresas/insertar" class="btn btn-primary btn-sm">Registrar empresa</a>
+                </div>
+                <div class="card-body">
+                    {{#if successMessage}}
+                        <div class="alert alert-success" role="alert">{{successMessage}}</div>
+                    {{/if}}
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle mb-0 text-center">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col">Empresa</th>
+                                    <th scope="col">Giro</th>
+                                    <th scope="col">Domicilio</th>
+                                    <th scope="col">Colonia</th>
+                                    <th scope="col">Ciudad</th>
+                                    <th scope="col">Código Postal</th>
+                                    <th scope="col">Titular nombre</th>
+                                    <th scope="col">Titular puesto</th>
+                                    <th scope="col">Firmante nombre</th>
+                                    <th scope="col">Firmante puesto</th>
+                                    <th scope="col">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#if empresas.length}}
+                                    {{#each empresas}}
+                                        <tr>
+                                            <td>{{nombre}}</td>
+                                            <td>{{#if empresa_sector}}{{empresa_sector}}{{else}}{{giro_sector}}{{/if}}</td>
+                                            <td>{{domicilio}}</td>
+                                            <td>{{colonia}}</td>
+                                            <td>{{ciudad}}</td>
+                                            <td>{{codigo_postal}}</td>
+                                            <td>{{titular_nombre}}</td>
+                                            <td>{{titular_puesto}}</td>
+                                            <td>{{firmante_nombre}}</td>
+                                            <td>{{firmante_puesto}}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <a href="/empresas/edit_dynamic/{{id}}" class="btn btn-warning btn-sm" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                    <a href="/empresas/delete/{{id}}" class="btn btn-danger btn-sm" title="Eliminar"><i class="fa-solid fa-trash"></i></a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {{/each}}
+                                {{else}}
+                                    <tr>
+                                        <td colspan="12" class="text-muted">Sin empresas registradas por el momento.</td>
+                                    </tr>
+                                {{/if}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

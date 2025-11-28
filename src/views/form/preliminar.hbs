@@ -1,0 +1,485 @@
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <h3 class="text-center">REPORTE PRELIMINAR DE RESIDENCIAS PROFESIONALES</h3>
+                <hr>
+
+                <form id="preliminar-form" action="/documento-preliminar" method="post">
+                    <h5>Datos del estudiante</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label"><b>Nombre del Estudiante</b></label>
+                            <input type="text" class="form-control" name="nombre_estudiante" id="nombre_estudiante" value="{{#if alumno}}{{alumno.nombre}}{{/if}}">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><b>No. de Control</b></label>
+                            <input type="text" class="form-control" name="num_control" id="num_control" value="{{#if alumno}}{{alumno.num_control}}{{/if}}" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label"><b>Carrera</b></label>
+                            <select class="form-select" name="carrera" id="carrera">
+                                <option value="">Seleccionar carrera</option>
+                                {{#each carreras}}
+                                    <option value="{{nombre}}" {{#if ../alumno}}{{#if (equals ../alumno.carrera nombre)}}selected{{/if}}{{/if}}>{{nombre}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <label class="form-label"><b>Periodo</b></label>
+                            <select class="form-select" name="periodo_select" id="periodo_select">
+                                <option value="">Seleccionar periodo</option>
+                                <option value="Ene-Jun">Ene-Jun</option>
+                                <option value="Ago-Dic">Ago-Dic</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label"><b>Año</b></label>
+                            <input type="number" class="form-control" name="periodo_year" id="periodo_year" placeholder="2025" min="2000" max="2100">
+                        </div>
+                        <div class="col-md-6 align-self-end">
+                            <small class="text-muted">Selecciona el periodo y el año. Se combinarán como "Ene-Jun 2025" al enviar.</small>
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4">Datos de la empresa</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label"><b>Empresa</b></label>
+                            <select class="form-select" id="empresa_id" name="empresa_id">
+                                <option value="">Seleccionar empresa</option>
+                                {{#each empresas}}
+                                    <option value="{{id}}">{{nombre}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><b>Giro</b></label>
+                            <input type="text" class="form-control" name="giro" id="giro">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Domicilio</b></label>
+                        <input type="text" class="form-control" name="domicilio_telefono" id="domicilio_telefono">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Principales actividades de la empresa</b></label>
+                        <textarea class="form-control" rows="2" name="actividades_empresa" id="actividades_empresa"></textarea>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label"><b>Nombre del Asesor de la empresa</b></label>
+                            <input type="text" class="form-control" name="asesor_empresa" id="asesor_empresa">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label"><b>Puesto del Asesor de la empresa</b></label>
+                            <input type="text" class="form-control" name="puesto_asesor_empresa" id="puesto_asesor_empresa">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Datos de contacto</b></label>
+                        <input type="text" class="form-control" name="contacto_empresa" id="contacto_empresa">
+                    </div>
+
+                    <h5 class="mt-4">Datos del proyecto (Mínimo 2 cuartillas)</h5>
+                    <div class="mb-3">
+                        <label class="form-label"><b>Nombre del Proyecto</b></label>
+                        <input type="text" class="form-control" name="nombre_proyecto" id="nombre_proyecto">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Área o Departamento donde se desarrollará el proyecto</b></label>
+                        <input type="text" class="form-control" name="area_departamento" id="area_departamento" placeholder="Compras, Mantenimiento, Ensamble...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Objetivo(s) del proyecto</b></label>
+                        <textarea class="form-control" rows="4" name="objetivos" id="objetivos" placeholder="Describir objetivos orientados a las actividades a desarrollar..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Delimitación</b></label>
+                        <textarea class="form-control" rows="3" name="delimitacion" id="delimitacion"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><b>Justificación del Proyecto</b></label>
+                        <textarea class="form-control" rows="3" name="justificacion" id="justificacion"></textarea>
+                    </div>
+
+                    <h5 class="mt-4">Descripción detallada de las actividades a desarrollar</h5>
+                    <div class="mb-3">
+                        <textarea class="form-control" rows="4" name="descripcion_actividades" id="descripcion_actividades" placeholder="Descripción detallada de las actividades a desarrollar..."></textarea>
+                    </div>
+
+                    <h5 class="mt-4 text-center">Cronograma de actividades</h5>
+                    <div class="mb-3">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" id="cronograma-table">
+                                <thead>
+                                    <tr>
+                                        <th style="min-width:220px">Actividades</th>
+                                        <th class="text-center">Ene</th>
+                                        <th class="text-center">Feb</th>
+                                        <th class="text-center">Mar</th>
+                                        <th class="text-center">Abr</th>
+                                        <th class="text-center">May</th>
+                                        <th class="text-center">Jun</th>
+                                        <th class="text-center">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Row template will be inserted by JS. Insert one initial row -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button type="button" id="add-actividad" class="btn btn-sm btn-outline-primary">Agregar actividad</button>
+                            <small class="text-muted align-self-center">Marca los meses en los que se realizará la actividad.</small>
+                        </div>
+                    </div>
+
+                    <!-- Hidden serialized cronograma JSON -->
+                    <input type="hidden" id="cronograma_json" name="cronograma_json" value="">
+                    <!-- Hidden combined periodo field (combines periodo_select + periodo_year) -->
+                    <input type="hidden" id="periodo_residencias" name="periodo_residencias" value="">
+
+                    <div class="d-grid gap-2 mt-4">
+                        {{#if usuario}}
+                            {{#if pdfInfoStatus}}
+                                    {{#unless (equals pdfInfoStatus 'rechazada')}}
+                                    <button type="submit" class="btn btn-primary" style="background-color:#233d7a;" disabled>Documento ya generado</button>
+                                    <small class="text-muted">Si reenvías, solo se actualizará la información del proyecto y los documentos.</small>
+                                {{else}}
+                                    <button type="submit" class="btn btn-primary" style="background-color:#233d7a;">Enviar documento preliminar</button>
+                                {{/unless}}
+                            {{else}}
+                                <button type="submit" class="btn btn-primary" style="background-color:#233d7a;">Enviar documento preliminar</button>
+                            {{/if}}
+                        {{else}}
+                            <a href="/login" class="btn btn-primary" style="background-color:#233d7a;">Iniciar sesión para enviar</a>
+                        {{/if}}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const PRELIM_DEFAULTS = {{#if prelimDefaultsJson}}{{{prelimDefaultsJson}}}{{else}}{}{{/if}};
+
+    // Prefill empresa details, hydrate cronograma, and handle submission workflow
+    document.addEventListener('DOMContentLoaded', () => {
+        const defaults = (PRELIM_DEFAULTS && typeof PRELIM_DEFAULTS === 'object' && !Array.isArray(PRELIM_DEFAULTS)) ? PRELIM_DEFAULTS : {};
+        window.__prelimDefaults = defaults;
+
+        const stripAccents = (text) => String(text || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const normalizeText = (value) => stripAccents(String(value || '')).toLowerCase().replace(/\s+/g, ' ').trim();
+        const cleanValue = (value) => {
+            if (value === null || value === undefined) return '';
+            if (typeof value === 'number') return Number.isFinite(value) ? String(value) : '';
+            if (typeof value === 'boolean') return value ? 'true' : 'false';
+            if (typeof value === 'object') return '';
+            const text = String(value).trim();
+            if (!text) return '';
+            const lowered = text.toLowerCase();
+            if (lowered === 'undefined' || lowered === 'null') return '';
+            return String(value);
+        };
+
+        const setInputValue = (id, value) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const sanitized = cleanValue(value);
+            if (sanitized === '') return;
+            el.value = sanitized;
+        };
+
+        const setSelectValue = (id, value) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const sanitized = cleanValue(value);
+            if (sanitized === '') return;
+            const target = String(sanitized);
+            el.value = target;
+            if (el.value === target) return;
+            const options = Array.from(el.options || []);
+            const matchByValue = options.find((opt) => String(opt.value) === target);
+            if (matchByValue) {
+                el.value = matchByValue.value;
+                return;
+            }
+            const normalizedTarget = normalizeText(target);
+            const matchByText = options.find((opt) => normalizeText(opt.text) === normalizedTarget);
+            if (matchByText) el.value = matchByText.value;
+        };
+
+        const monthKeys = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'];
+        const monthTagLookup = { enex: 'Enero', febx: 'Febrero', marx: 'Marzo', abrx: 'Abril', mayx: 'Mayo', junx: 'Junio' };
+
+        const cronogramaTableBody = document.querySelector('#cronograma-table tbody');
+        const hiddenCronograma = document.getElementById('cronograma_json');
+        const hiddenPeriodo = document.getElementById('periodo_residencias');
+        const empresaSelect = document.getElementById('empresa_id');
+        const addBtn = document.getElementById('add-actividad');
+        const form = document.getElementById('preliminar-form');
+
+        if (empresaSelect) {
+            empresaSelect.addEventListener('change', async () => {
+                const id = empresaSelect.value;
+                if (!id) return;
+                try {
+                    const res = await fetch('/empresa/' + id);
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const giroInput = document.getElementById('giro');
+                    const domicilioInput = document.getElementById('domicilio_telefono');
+                    if (giroInput) giroInput.value = data.giro || '';
+                    if (domicilioInput) domicilioInput.value = data.domicilio || '';
+                } catch (err) {
+                    console.error('Error cargando empresa:', err);
+                }
+            });
+        }
+
+        const toCanonicalMonth = (value) => {
+            const raw = cleanValue(value);
+            if (!raw) return null;
+            const normalized = normalizeText(raw).replace(/\./g, '');
+            if (!normalized) return null;
+            if (/^\d+$/.test(normalized)) {
+                const num = parseInt(normalized, 10);
+                if (num >= 1 && num <= monthKeys.length) return monthKeys[num - 1];
+            }
+            const byName = monthKeys.find((name) => normalizeText(name).startsWith(normalized) || normalized.startsWith(normalizeText(name)));
+            if (byName) return byName;
+            const shortMap = { ene: 'Enero', feb: 'Febrero', mar: 'Marzo', abr: 'Abril', may: 'Mayo', jun: 'Junio' };
+            return shortMap[normalized] || null;
+        };
+
+        function createRow(data = {}) {
+            const tr = document.createElement('tr');
+
+            const tdDesc = document.createElement('td');
+            const textarea = document.createElement('textarea');
+            textarea.className = 'form-control actividad-desc';
+            textarea.rows = 2;
+            textarea.value = data.descripcion || '';
+            tdDesc.appendChild(textarea);
+            tr.appendChild(tdDesc);
+
+            monthKeys.forEach((monthName) => {
+                const td = document.createElement('td');
+                td.className = 'text-center align-middle';
+                const input = document.createElement('input');
+                input.type = 'checkbox';
+                input.className = 'mes-checkbox';
+                input.dataset.month = monthName;
+                if (Array.isArray(data.meses) && data.meses.includes(monthName)) input.checked = true;
+                td.appendChild(input);
+                tr.appendChild(td);
+            });
+
+            const tdAct = document.createElement('td');
+            tdAct.className = 'text-center align-middle';
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-sm btn-danger remove-actividad';
+            removeBtn.textContent = 'Eliminar';
+            removeBtn.addEventListener('click', () => tr.remove());
+            tdAct.appendChild(removeBtn);
+            tr.appendChild(tdAct);
+
+            return tr;
+        }
+
+        const buildMonthSet = (entry) => {
+            const months = new Set();
+            if (Array.isArray(entry?.meses)) {
+                entry.meses.forEach((month) => {
+                    const canonical = toCanonicalMonth(month);
+                    if (canonical) months.add(canonical);
+                });
+            }
+            Object.entries(monthTagLookup).forEach(([tag, name]) => {
+                const raw = cleanValue(entry?.[tag]);
+                if (raw && raw.toUpperCase().startsWith('X')) months.add(name);
+            });
+            monthKeys.forEach((name) => {
+                const key = `${name}Img`;
+                const raw = cleanValue(entry?.[key]);
+                if (raw && raw.toUpperCase().startsWith('X')) months.add(name);
+            });
+            const single = cleanValue(entry?.mes || entry?.mes_unico);
+            const canonicalSingle = toCanonicalMonth(single);
+            if (canonicalSingle) months.add(canonicalSingle);
+            return Array.from(months).sort((a, b) => monthKeys.indexOf(a) - monthKeys.indexOf(b));
+        };
+
+        const normalizeCronogramaEntry = (entry) => {
+            if (!entry) return null;
+            const safe = (typeof entry === 'object') ? { ...entry } : { descripcion: entry };
+            const descripcion = cleanValue(safe.descripcion);
+            const meses = buildMonthSet(safe);
+            if (!descripcion && meses.length === 0) return null;
+            return { descripcion, meses };
+        };
+
+        const parseCronogramaSource = () => {
+            if (Array.isArray(defaults.cronograma) && defaults.cronograma.length > 0) return defaults.cronograma;
+            if (defaults.cronograma_json) {
+                try {
+                    const parsed = typeof defaults.cronograma_json === 'string' ? JSON.parse(defaults.cronograma_json) : defaults.cronograma_json;
+                    if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                } catch (err) {
+                    console.warn('No se pudo parsear cronograma_json persistido:', err);
+                }
+            }
+            if (Array.isArray(defaults.cronograma_actividades) && defaults.cronograma_actividades.length > 0) return defaults.cronograma_actividades;
+            return [];
+        };
+
+        const hydrateCronograma = (entries) => {
+            if (!cronogramaTableBody) return;
+            cronogramaTableBody.innerHTML = '';
+            const normalized = (entries || []).map(normalizeCronogramaEntry).filter(Boolean);
+            if (normalized.length === 0) {
+                cronogramaTableBody.appendChild(createRow());
+            } else {
+                normalized.forEach((item) => cronogramaTableBody.appendChild(createRow(item)));
+            }
+            if (hiddenCronograma) {
+                hiddenCronograma.value = normalized.length > 0 ? JSON.stringify(normalized) : '';
+            }
+        };
+
+        const applyPeriodoDefaults = () => {
+            let periodoText = cleanValue(defaults.periodo_residencias || defaults.periodo || defaults.periodo_select);
+            let yearText = cleanValue(defaults.periodo_year || defaults.anio || defaults.year);
+            if (periodoText) {
+                const match = periodoText.match(/(\d{4})$/);
+                if (match && !yearText) {
+                    yearText = match[1];
+                    periodoText = periodoText.slice(0, -match[1].length).trim();
+                }
+            }
+            const normalizedPeriodo = normalizeText(periodoText);
+            const periodoMap = {
+                'enero-junio': 'Ene-Jun',
+                'ene-junio': 'Ene-Jun',
+                'ene-jun': 'Ene-Jun',
+                'enero a junio': 'Ene-Jun',
+                'enero a jun': 'Ene-Jun',
+                'enero-julio': 'Ene-Jun',
+                'agosto-diciembre': 'Ago-Dic',
+                'ago-diciembre': 'Ago-Dic',
+                'ago-dic': 'Ago-Dic',
+                'agosto a diciembre': 'Ago-Dic',
+                'agosto a dic': 'Ago-Dic'
+            };
+            let periodoSelectValue = periodoText;
+            if (periodoMap[normalizedPeriodo]) periodoSelectValue = periodoMap[normalizedPeriodo];
+            else if (normalizedPeriodo.startsWith('ene')) periodoSelectValue = 'Ene-Jun';
+            else if (normalizedPeriodo.startsWith('ago')) periodoSelectValue = 'Ago-Dic';
+
+            setSelectValue('periodo_select', periodoSelectValue);
+            setInputValue('periodo_year', yearText);
+
+            const combined = [cleanValue(periodoSelectValue) || periodoText, cleanValue(yearText)].filter(Boolean).join(' ').trim();
+            return combined;
+        };
+
+        const applyDefaults = () => {
+            setInputValue('nombre_estudiante', defaults.nombre_estudiante || defaults.estudiante_nombre || defaults.nombre);
+            setInputValue('num_control', defaults.num_control || defaults.alumno_num_control);
+            const carreraValue = defaults.carrera || defaults.coord_carrera || defaults.carrera_nombre;
+            if (carreraValue) setSelectValue('carrera', carreraValue);
+            setSelectValue('empresa_id', defaults.empresa_id || defaults.empresa);
+            setInputValue('giro', defaults.giro || defaults.empresa_sector || defaults.giro_empresa);
+            setInputValue('domicilio_telefono', defaults.domicilio_telefono || defaults.empresa_domicilio || defaults.domicilio);
+            setInputValue('actividades_empresa', defaults.actividades_empresa || defaults.empresa_mision || defaults.actividades);
+            setInputValue('asesor_empresa', defaults.asesor_empresa || defaults.nombre_asesor_externo || defaults.asesor_externo);
+            setInputValue('puesto_asesor_empresa', defaults.puesto_asesor_empresa || defaults.puesto_asesor_externo);
+            setInputValue('contacto_empresa', defaults.contacto_empresa || defaults.contacto || defaults.atencion_a);
+            setInputValue('nombre_proyecto', defaults.nombre_proyecto);
+            setInputValue('area_departamento', defaults.area_departamento);
+            setInputValue('objetivos', defaults.objetivos);
+            setInputValue('delimitacion', defaults.delimitacion);
+            setInputValue('justificacion', defaults.justificacion);
+            setInputValue('descripcion_actividades', defaults.descripcion_actividades);
+
+            hydrateCronograma(parseCronogramaSource());
+
+            const periodoCombined = applyPeriodoDefaults();
+            if (hiddenPeriodo && periodoCombined) hiddenPeriodo.value = periodoCombined;
+
+            if (empresaSelect && empresaSelect.value && !cleanValue(defaults.giro)) {
+                empresaSelect.dispatchEvent(new Event('change'));
+            }
+        };
+
+        applyDefaults();
+
+        if (addBtn && cronogramaTableBody) {
+            addBtn.addEventListener('click', () => {
+                cronogramaTableBody.appendChild(createRow());
+            });
+        }
+
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const rows = Array.from(document.querySelectorAll('#cronograma-table tbody tr'));
+                const cronograma = rows.map((row) => {
+                    const descripcion = row.querySelector('.actividad-desc')?.value || '';
+                    const meses = Array.from(row.querySelectorAll('.mes-checkbox'))
+                        .filter((checkbox) => checkbox.checked)
+                        .map((checkbox) => checkbox.dataset.month);
+                    return { descripcion, meses };
+                }).filter((item) => item.descripcion || item.meses.length);
+
+                if (hiddenCronograma) hiddenCronograma.value = JSON.stringify(cronograma);
+
+                const periodoSelectValue = document.getElementById('periodo_select')?.value || '';
+                const periodoYearValue = document.getElementById('periodo_year')?.value || '';
+                const periodoCombined = [periodoSelectValue, periodoYearValue].filter(Boolean).join(' ') || periodoSelectValue || periodoYearValue;
+                if (hiddenPeriodo) hiddenPeriodo.value = periodoCombined;
+
+                const formData = new FormData(form);
+                const payload = {};
+                formData.forEach((value, key) => {
+                    if (payload[key] !== undefined) {
+                        if (!Array.isArray(payload[key])) payload[key] = [payload[key]];
+                        payload[key].push(value);
+                    } else {
+                        payload[key] = value;
+                    }
+                });
+
+                try {
+                    const resp = await fetch(form.action, {
+                        method: form.method || 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const body = await resp.json();
+                    if (resp.ok && body && (body.ok || body.file || body.file_docx)) {
+                        alert('Documento enviado al jefe de departamento. Ahora serás redirigido a la página principal.');
+                        window.location.href = '/';
+                    } else {
+                        console.error('Error response from server:', body);
+                        alert('Ocurrió un error al enviar el documento. Revisa la consola o intenta de nuevo.');
+                    }
+                } catch (err) {
+                    console.error('Error enviando preliminar:', err);
+                    alert('Ocurrió un error de red al enviar el documento.');
+                }
+            });
+        }
+    });
+    </script>

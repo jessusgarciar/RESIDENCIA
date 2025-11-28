@@ -1,0 +1,75 @@
+/* Styles for the form page to match the printed PDF layout */
+body {
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container h3 {
+	font-weight: 600;
+	font-size: 20px;
+}
+
+/* Empresa details box */
+#empresa-datos {
+	font-size: 13px;
+}
+
+/* Signature area removed */
+
+.form-label b { font-weight: 600; }
+
+/* Small helper: tighter inputs for printing-like layout */
+input.form-control, select.form-select {
+	font-size: 14px;
+	padding: .35rem .5rem;
+}
+
+.border-box {
+	border: 1px solid #ccc;
+	padding: 8px;
+}
+
+.nav-notifications-badge {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transform: translate(50%, -50%);
+	font-size: 0.65rem;
+	min-width: 1.5rem;
+}
+
+#globalToastContainer .toast-modern {
+	min-width: 320px;
+	max-width: 360px;
+	border-radius: 1rem;
+	border: 1px solid #e0e0e0;
+	background: #fff;
+	padding: 0.75rem 1rem;
+}
+
+.toast-modern__header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.toast-modern__body {
+	font-size: 0.95rem;
+}
+
+.toast-success {
+	border-color: #8fd19e;
+}
+
+.toast-warning {
+	border-color: #fdd074;
+}
+
+.toast-info {
+	border-color: #9fd1f2;
+}
+
+.toast-default {
+	border-color: #b8c7f5;
+}
+

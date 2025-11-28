@@ -1,0 +1,314 @@
+{{! Vista renovada para solicitudes y notificaciones }}
+<div class="container mt-4">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+          <div>
+            <h5 class="mb-0">Seguimiento de solicitudes</h5>
+            <small class="text-white-50">Revisa comentarios del administrador y el estado de tus documentos.</small>
+          </div>
+          <span class="badge text-bg-light text-primary" id="solicitudesCounter">0 solicitudes</span>
+        </div>
+        <div class="card-body">
+          <div id="requestsContainer" class="vstack gap-3">
+            <div class="text-center text-muted py-4" id="requestsEmpty">Cargando solicitudes...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm h-100">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-0">Notificaciones recibidas</h6>
+            <small class="text-muted">Mensajes del administrador</small>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-secondary" id="refreshAlertsBtn" title="Actualizar">
+            <i class="fa-solid fa-rotate-right"></i>
+          </button>
+        </div>
+        <div class="list-group list-group-flush" id="alertsList">
+          <div class="list-group-item text-center text-muted py-4">Cargando notificaciones...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal para subir nuevo PDF -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Subir nuevo PDF</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="uploadForm">
+          <input type="hidden" id="upload_solicitud_id">
+          <div class="mb-3">
+            <label class="form-label">Seleccionar archivo PDF</label>
+            <input type="file" id="upload_file" accept="application/pdf" class="form-control">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <button type="button" id="sendUpload" class="btn btn-primary">Subir</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const requestsContainer = document.getElementById('requestsContainer');
+  const solicitudesCounter = document.getElementById('solicitudesCounter');
+  const alertsList = document.getElementById('alertsList');
+  const refreshAlertsBtn = document.getElementById('refreshAlertsBtn');
+  const uploadModalEl = document.getElementById('uploadModal');
+  const uploadModal = uploadModalEl ? new bootstrap.Modal(uploadModalEl) : null;
+  const uploadInput = document.getElementById('upload_file');
+  const uploadSolicitudInput = document.getElementById('upload_solicitud_id');
+  const sendUploadBtn = document.getElementById('sendUpload');
+
+  const state = {
+    solicitudes: [],
+    alerts: []
+  };
+
+  const statusBadgeClass = (status = '') => {
+    const normalized = status.toLowerCase();
+    switch (normalized) {
+      case 'aprobada':
+        return 'badge bg-success';
+      case 'rechazada':
+        return 'badge bg-danger';
+      case 'pendiente':
+      default:
+        return 'badge bg-secondary';
+    }
+  };
+
+  const buildSolicitudCard = (row) => {
+    const comments = row.comments_html || '<span class="text-muted">Sin comentarios registrados.</span>';
+    const actions = [];
+    if (row.estatus === 'aprobada' && row.has_pdf) {
+      if (row.pdf_solicitud_id) {
+        actions.push(`<button type="button" class="btn btn-sm btn-success" data-action="download" data-id="${row.pdf_solicitud_id}"><i class="bi bi-file-earmark-text me-1"></i>Descargar Solicitud</button>`);
+      }
+      if (row.pdf_reporte_id) {
+        actions.push(`<button type="button" class="btn btn-sm btn-primary" data-action="download" data-id="${row.pdf_reporte_id}"><i class="bi bi-file-earmark-pdf me-1"></i>Descargar Reporte</button>`);
+      }
+      // Fallback for legacy records or if specific IDs are missing but a generic one exists
+      if (!row.pdf_solicitud_id && !row.pdf_reporte_id && row.pdf_id) {
+         actions.push(`<button type="button" class="btn btn-sm btn-primary" data-action="download" data-id="${row.pdf_id}"><i class="bi bi-file-earmark-pdf me-1"></i>Descargar Documento</button>`);
+      }
+    } else if (row.estatus === 'rechazada') {
+      // Disable reenviar if a new document was generated (pdf_info pending/approved) or if a PDF exists
+      const disableReenvio = (row.pdf_info_estatus && (row.pdf_info_estatus === 'pendiente' || row.pdf_info_estatus === 'aprobada')) || !!row.has_pdf;
+      actions.push(`<button type="button" class="btn btn-sm btn-warning" data-action="reenviar" data-id="${row.id}" ${disableReenvio ? 'disabled aria-disabled="true" title="No disponible: ya hay documentos generados"' : ''}>Reenviar solicitud</button>`);
+    } else if (row.estatus === 'pendiente') {
+      // Do not show upload/view actions while solicitud is pending
+    } else {
+      actions.push(`<button type="button" class="btn btn-sm btn-primary" data-action="upload" data-id="${row.id}">Subir/Actualizar PDF</button>`);
+      if (row.has_pdf) {
+        actions.push(`<button type="button" class="btn btn-sm btn-outline-secondary" data-action="download" data-id="${row.pdf_id}">Ver PDF</button>`);
+      }
+    }
+    const actionsHtml = actions.length ? actions.join(' ') : '';
+    return `
+      <div class="border rounded p-3" data-solicitud-id="${row.id}">
+        <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+          <div>
+            <h6 class="mb-1">${row.nombre_proyecto}</h6>
+            <small class="text-muted">${row.fecha_solicitud_fmt || row.fecha_solicitud || ''}</small>
+          </div>
+          <span class="${statusBadgeClass(row.estatus)} text-uppercase">${row.estatus}</span>
+        </div>
+        <div class="mt-3">
+          <div class="small fw-semibold text-muted text-uppercase">Comentarios</div>
+          <div class="comment-rich-text">${comments}</div>
+        </div>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+          ${actionsHtml || '<span class="text-muted">No hay acciones disponibles.</span>'}
+        </div>
+      </div>`;
+  };
+
+  const renderSolicitudes = () => {
+    if (!requestsContainer) return;
+    if (!state.solicitudes.length) {
+      requestsContainer.innerHTML = '<div class="text-center text-muted py-4">No tienes solicitudes registradas.</div>';
+      solicitudesCounter.textContent = '0 solicitudes';
+      return;
+    }
+    // Ensure solicitudes are ordered from most recent to oldest (fecha_solicitud)
+    const ordered = state.solicitudes.slice().sort((a, b) => {
+      const ta = Number(a.order_ts ?? a.id ?? 0);
+      const tb = Number(b.order_ts ?? b.id ?? 0);
+      return tb - ta;
+    });
+    const fragments = ordered.map(buildSolicitudCard).join('');
+    requestsContainer.innerHTML = fragments;
+    solicitudesCounter.textContent = `${state.solicitudes.length} ${state.solicitudes.length === 1 ? 'solicitud' : 'solicitudes'}`;
+  };
+
+  const alertBadgeClass = (tipo = 'info') => {
+    const normalized = tipo.toLowerCase();
+    switch (normalized) {
+      case 'aprobacion':
+        return 'badge bg-success';
+      case 'denegacion':
+        return 'badge bg-warning text-dark';
+      case 'comentario':
+        return 'badge bg-info text-dark';
+      default:
+        return 'badge bg-primary';
+    }
+  };
+
+  const renderAlerts = () => {
+    if (!alertsList) return;
+    if (!state.alerts.length) {
+      alertsList.innerHTML = '<div class="list-group-item text-center text-muted py-4">No tienes notificaciones por el momento.</div>';
+      return;
+    }
+    alertsList.innerHTML = state.alerts.map((alert) => `
+      <div class="list-group-item d-flex justify-content-between align-items-start gap-3" data-alert-id="${alert.id}">
+        <div>
+          <span class="${alertBadgeClass(alert.tipo)} text-uppercase">${alert.tipo}</span>
+          <div class="mt-2">${alert.mensaje}</div>
+          <small class="text-muted">${alert.created_label || ''}</small>
+        </div>
+        <button class="btn btn-sm btn-link text-danger" data-action="delete-alert" data-id="${alert.id}" title="Eliminar">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>`).join('');
+  };
+
+  const fetchSolicitudesAndAlerts = async () => {
+    try {
+      const resp = await fetch('/alumno/notificaciones/data');
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'No se pudo cargar la información');
+      state.solicitudes = data.solicitudes || [];
+      state.alerts = data.alerts || [];
+      renderSolicitudes();
+      renderAlerts();
+    } catch (err) {
+      console.error('Error cargando solicitudes/notificaciones:', err);
+      if (requestsContainer) {
+        requestsContainer.innerHTML = '<div class="text-center text-danger py-4">Error cargando información.</div>';
+      }
+    }
+  };
+
+  const fetchAlertsOnly = async () => {
+    try {
+      const resp = await fetch('/notifications/list');
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'No se pudieron obtener las notificaciones');
+      state.alerts = (data.notifications || []).map((n) => ({
+        ...n,
+        created_label: n.created_label || ''
+      }));
+      renderAlerts();
+    } catch (err) {
+      console.error('Error actualizando notificaciones:', err);
+      alert('No se pudieron actualizar las notificaciones');
+    }
+  };
+
+  const handleActionClick = (event) => {
+    const target = event.target.closest('[data-action]');
+    if (!target) return;
+    const action = target.dataset.action;
+    if (action === 'upload') {
+      uploadSolicitudInput.value = target.dataset.id;
+      uploadModal?.show();
+    }
+    if (action === 'download') {
+      const pdfId = target.dataset.id;
+      if (!pdfId) return;
+      window.open(`/solicitudes/stream/${pdfId}`, '_blank');
+    }
+    if (action === 'reenviar') {
+      const id = target.dataset.id;
+      if (!id) return;
+      // If the button is disabled, do nothing
+      if (target.disabled) return;
+      window.location.href = `/forms?reenvio=${id}`;
+    }
+  };
+
+  const deleteAlert = async (id) => {
+    if (!id) return;
+    if (window.NotificationCenter?.deleteNotification) {
+      await window.NotificationCenter.deleteNotification(id);
+      await fetchAlertsOnly();
+      return;
+    }
+    try {
+      const resp = await fetch(`/notifications/${id}`, { method: 'DELETE' });
+      const data = await resp.json();
+      if (!resp.ok || !data.ok) throw new Error(data.error || 'Error eliminando la notificación');
+      state.alerts = state.alerts.filter((alert) => String(alert.id) !== String(id));
+      renderAlerts();
+      window.NotificationCenter?.refreshNotifications?.();
+    } catch (err) {
+      console.error(err);
+      alert(err.message || 'No se pudo eliminar la notificación');
+    }
+  };
+
+  requestsContainer?.addEventListener('click', handleActionClick);
+
+  alertsList?.addEventListener('click', async (event) => {
+    const btn = event.target.closest('[data-action="delete-alert"]');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    if (!id) return;
+    await deleteAlert(id);
+  });
+
+  refreshAlertsBtn?.addEventListener('click', (event) => {
+    event.preventDefault();
+    fetchAlertsOnly();
+  });
+
+  sendUploadBtn?.addEventListener('click', async () => {
+    if (!uploadInput?.files || uploadInput.files.length === 0) {
+      alert('Selecciona un archivo PDF');
+      return;
+    }
+    const solicitudId = uploadSolicitudInput.value;
+    const file = uploadInput.files[0];
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUri = e.target.result;
+      try {
+        const resp = await fetch('/solicitudes/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ solicitud_id: solicitudId, filename: file.name, data: dataUri })
+        });
+        const data = await resp.json();
+        if (!resp.ok || !data.ok) throw new Error(data.error || 'No se pudo subir el PDF');
+        alert('PDF subido correctamente');
+        uploadInput.value = '';
+        uploadModal?.hide();
+        fetchSolicitudesAndAlerts();
+      } catch (err) {
+        console.error('Error subiendo PDF:', err);
+        alert(err.message || 'Error subiendo PDF');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  fetchSolicitudesAndAlerts();
+});
+</script>

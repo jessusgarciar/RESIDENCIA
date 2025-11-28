@@ -1,0 +1,276 @@
+<main class="mt-5 mb-5">
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-5">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h2 class="fw-bold text-primary mb-3" >
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Solicitud de Residencias y Reporte Preliminar
+                        </h2>
+                        <p class="text-muted fs-5 mb-0">
+                            Este documento es un formato oficial para solicitar residencias profesionales en el Instituto Tecnológico, 
+                            que recopila datos del proyecto, la empresa y el estudiante participante.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-center">
+                        <div class="hero-icon">
+                            <i class="bi bi-mortarboard-fill text-primary" style="font-size: 5rem;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Status Indicator (Only for logged in alumnos) -->
+        {{#if userStatus}}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light border-0 py-3">
+                <h5 class="mb-0">
+                    <i class="bi bi-graph-up me-2"></i>
+                    Tu Estado Actual
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="status-item">
+                            {{#if userStatus.hasPersonalData}}
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                <span class="text-success fw-semibold">Datos personales completos</span>
+                            {{else}}
+                                <i class="bi bi-exclamation-circle-fill text-warning me-2"></i>
+                                <span class="text-warning fw-semibold">Datos personales incompletos</span>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="status-item">
+                            {{#if userStatus.hasSolicitud}}
+                                {{#if (equals userStatus.solicitudStatus "aprobada")}}
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    <span class="text-success fw-semibold">Solicitud aprobada</span>
+                                {{else if (equals userStatus.solicitudStatus "rechazada")}}
+                                    <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                                    <span class="text-danger fw-semibold">Solicitud rechazada</span>
+                                {{else}}
+                                    <i class="bi bi-clock-fill text-warning me-2"></i>
+                                    <span class="text-warning fw-semibold">Solicitud pendiente de revisión</span>
+                                {{/if}}
+                            {{else}}
+                                <i class="bi bi-circle text-secondary me-2"></i>
+                                <span class="text-secondary">Solicitud no iniciada</span>
+                            {{/if}}
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="status-item">
+                            {{#if userStatus.pdfStatus}}
+                                {{#if (equals userStatus.pdfStatus "aprobado")}}
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    <span class="text-success fw-semibold">Reporte aprobado</span>
+                                {{else if (equals userStatus.pdfStatus "rechazado")}}
+                                    <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                                    <span class="text-danger fw-semibold">Reporte rechazado</span>
+                                {{else if (equals userStatus.pdfStatus "rechazada")}}
+                                    <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                                    <span class="text-danger fw-semibold">Reporte rechazado</span>
+                                {{else}}
+                                    <i class="bi bi-clock-fill text-warning me-2"></i>
+                                    <span class="text-warning fw-semibold">Reporte en revisión</span>
+                                {{/if}}
+                            {{else}}
+                                <i class="bi bi-circle text-secondary me-2"></i>
+                                <span class="text-secondary">Reporte no iniciado</span>
+                            {{/if}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/if}}
+
+        <!-- Process Steps Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 process-card">
+                    <div class="card-body text-center p-4">
+                        <div class="process-icon mb-3">
+                            <i class="bi bi-pencil-square text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Paso 1</h5>
+                        <h6 class="text-primary mb-2">Solicitud y Reporte</h6>
+                        <p class="card-text text-muted small">
+                            Llena tu solicitud de residencia y el reporte preliminar con los datos del proyecto.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 process-card">
+                    <div class="card-body text-center p-4">
+                        <div class="process-icon mb-3">
+                            <i class="bi bi-search text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Paso 2</h5>
+                        <h6 class="text-primary mb-2">Revisión</h6>
+                        <p class="card-text text-muted small">
+                            El jefe de departamento revisa y aprueba tu solicitud y reporte preliminar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 process-card">
+                    <div class="card-body text-center p-4">
+                        <div class="process-icon mb-3">
+                            <i class="bi bi-file-earmark-pdf text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Paso 3</h5>
+                        <h6 class="text-primary mb-2">Generar Documentos</h6>
+                        <p class="card-text text-muted small">
+                            Una vez aprobado, se generan los documentos oficiales para su descarga.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="card h-100 shadow-sm border-0 process-card">
+                    <div class="card-body text-center p-4">
+                        <div class="process-icon mb-3">
+                            <i class="bi bi-person-check text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h5 class="card-title fw-bold">Paso 4</h5>
+                        <h6 class="text-primary mb-2">Asignación de Asesor</h6>
+                        <p class="card-text text-muted small">
+                            El jefe de departamento genera la asignación de tu asesor interno.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="text-center">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-4">
+                    {{#if usuario}}
+                        <a href="/forms" class="btn btn-cta btn-lg px-5 py-3">
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Ir al Formulario
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                        <p class="text-muted mt-3 mb-0 small">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Asegúrate de tener todos los datos necesarios antes de comenzar
+                        </p>
+                    {{else}}
+                        <a href="/login" class="btn btn-cta btn-lg px-5 py-3">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>
+                            Iniciar Sesión para Continuar
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                        <p class="text-muted mt-3 mb-0 small">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Necesitas iniciar sesión para acceder al formulario
+                        </p>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<style>
+/* Brand palette tied to navbar tone */
+:root {
+    --res-primary: #233d7a;
+    --res-primary-light: #2f4fa2;
+    --res-primary-bright: #3b64d5;
+}
+
+.text-primary {
+    color: var(--res-primary-bright) !important;
+}
+
+/* Process Cards Hover Effect */
+.process-card {
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.process-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+.process-icon i {
+    transition: transform 0.3s ease;
+}
+
+.process-card:hover .process-icon i {
+    transform: scale(1.1);
+}
+
+/* Enhanced CTA Button */
+.btn-cta {
+    background: linear-gradient(135deg, var(--res-primary) 0%, var(--res-primary-bright) 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(35, 61, 122, 0.3);
+}
+
+.btn-cta:hover {
+    background: linear-gradient(135deg, var(--res-primary-bright) 0%, var(--res-primary-light) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(35, 61, 122, 0.4);
+    color: white;
+}
+
+.btn-cta:active {
+    transform: translateY(0);
+}
+
+/* Hero Icon Animation */
+.hero-icon i {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Status Items */
+.status-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.status-item:hover {
+    background: #e9ecef;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-icon {
+        margin-top: 2rem;
+    }
+    
+    .btn-cta {
+        width: 100%;
+    }
+}
+</style>

@@ -1,0 +1,90 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-xl-8">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+          <div>
+            <h4 class="mb-0">Asignación de asesor</h4>
+            {{#if solicitud}}
+              <small class="text-muted">Solicitud #{{solicitud.id}} &middot; {{solicitud.alumno_nombre}}</small>
+            {{/if}}
+          </div>
+          <a href="/admin/solicitudes" class="btn btn-link">&larr; Volver a solicitudes</a>
+        </div>
+        <div class="card-body">
+          {{#if errorMessage}}
+            <div class="alert alert-warning" role="alert">{{errorMessage}}</div>
+          {{/if}}
+
+          {{#if solicitud}}
+            <form method="POST" action="/admin/solicitudes/{{solicitud.id}}/asignar-asesor" class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Departamento</label>
+                <input type="text" name="departamento" class="form-control" value="{{formValues.departamento}}" placeholder="Ej. Ciencias Económico Administrativas" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Número de oficio</label>
+                <input type="text" name="num_oficio" class="form-control" value="{{formValues.num_oficio}}" placeholder="Ej. 123/2025" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Fecha</label>
+                <input type="date" name="fecha" class="form-control" value="{{formValues.fecha}}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label fw-semibold">Nombre del jefe de departamento</label>
+                <input type="text" name="nombre_jefe_departamento" class="form-control" value="{{formValues.nombre_jefe_departamento}}" placeholder="Ing. Juan Pérez" required>
+              </div>
+
+              <div class="col-12">
+                <label class="form-label fw-semibold">Selecciona asesor asignado</label>
+                {{#if asesores.length}}
+                  <select name="asesor_rfc" class="form-select" required>
+                    <option value="" disabled {{#unless formValues.asesor_rfc}}selected{{/unless}}>Selecciona un asesor</option>
+                    {{#each asesores}}
+                      <option value="{{rfc}}" {{#if (equals ../formValues.asesor_rfc rfc)}}selected{{/if}}>
+                        {{nombre}}{{#if carrera}} &middot; {{carrera}}{{/if}}
+                      </option>
+                    {{/each}}
+                  </select>
+                {{else}}
+                  <div class="alert alert-info mb-0">No hay asesores registrados. Crea uno desde la sección Asesores para continuar.</div>
+                {{/if}}
+              </div>
+
+              <div class="col-12">
+                <hr>
+                <h6 class="fw-semibold">Datos del residente</h6>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Nombre del alumno</label>
+                <input type="text" class="form-control" value="{{solicitud.alumno_nombre}}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Carrera</label>
+                <input type="text" class="form-control" value="{{solicitud.carrera_usuario}}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Proyecto</label>
+                <input type="text" class="form-control" value="{{solicitud.nombre_proyecto}}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Periodo</label>
+                <input type="text" class="form-control" value="{{solicitud.periodo_label}}" readonly>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Empresa</label>
+                <input type="text" class="form-control" value="{{solicitud.empresa_nombre}}" readonly>
+              </div>
+
+              <div class="col-12 d-flex justify-content-end mt-3">
+                <button type="submit" class="btn btn-success" {{#unless asesores.length}}disabled{{/unless}}>Generar documento</button>
+              </div>
+            </form>
+          {{else}}
+            <div class="alert alert-danger" role="alert">No se encontró la información de la solicitud.</div>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="container p-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card text-center">
+                <div class="card-header">
+                    <h3 class="text-uppercase">Registrar Empresa</h3>
+                    <div class="card-body">
+                        <form action="/empresas/insertar" method="post">
+                        <div class="input-group mt-2">
+                            <label for="nombre" class="input-group-text">Nombre de la empresa</label>
+                            <input class="form-control" type="text" name="nombre" id="nombre" placeholder="Ejemplo: Coca-Cola Inc." required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="atencion_a" class="input-group-text">Atencion a</label>
+                            <input class="form-control" type="text" name="atencion_a" id="atencion_a" placeholder="Ejemplo: Juan Perez" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="empresa_sector" class="form-label">Opcion Elegida</label>
+                            <select class="form-select" id="empresa_sector" name="giro_sector" required>
+                                <option value="">Seleccionar el giro</option>
+                                <option value="INDUSTRIAL">Industrial</option>
+                                <option value="SERVICIOS">Servicios</option>
+                                <option value="PUBLICO">Publico</option>
+                                <option value="PRIVADO">Privado</option>
+                                <option value="OTRO">Otro</option>
+                            </select>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="rfc_empresa" class="input-group-text">RFC</label>
+                            <input class="form-control" type="text" name="rfc_empresa" id="rfc_empresa" placeholder="Ejemplo: GASJD1010283" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="domicilio" class="input-group-text">Domicilio</label>
+                            <input class="form-control" type="text" name="domicilio" id="domicilio" placeholder="Ejemplo: Calle 123" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="colonia" class="input-group-text">Colonia</label>
+                            <input class="form-control" type="text" name="colonia" id="colonia" placeholder="Ejemplo: Centro" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="ciudad" class="input-group-text">Ciudad</label>
+                            <input class="form-control" type="text" name="ciudad" id="ciudad" placeholder="Ejemplo: Ciudad de Mexico" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="telefono_empresa" class="input-group-text">Telefono</label>
+                            <input class="form-control" type="text" name="telefono_empresa" id="telefono_empresa" placeholder="Ejemplo: 4651830823" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="mision" class="input-group-text">Mision</label>
+                            <input class="form-control" type="text" name="mision" id="mision" placeholder="Ejemplo: Ser la mejor empresa de bebidas" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="codigo_postal" class="input-group-text">Codigo Postal</label>
+                            <input class="form-control" type="text" name="codigo_postal" id="codigo_postal" placeholder="Ejemplo: 12345" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="titular_nombre" class="input-group-text">Nombre del titular</label>
+                            <input class="form-control" type="text" name="titular_nombre" id="titular_nombre" placeholder="Ejemplo: Juan Perez" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="titular_puesto" class="input-group-text">Puesto del titular</label>
+                            <input class="form-control" type="text" name="titular_puesto" id="titular_puesto" placeholder="Ejemplo: Gerente General" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="firmante_nombre" class="input-group-text">Nombre del firmante</label>
+                            <input class="form-control" type="text" name="firmante_nombre" id="firmante_nombre" placeholder="Ejemplo: Juan Perez" required>
+                        </div>
+                        <div class="input-group mt-2">
+                            <label for="firmante_puesto" class="input-group-text">Puesto del firmante</label>
+                            <input class="form-control" type="text" name="firmante_puesto" id="firmante_puesto" placeholder="Ejemplo: Gerente General" required>
+                        </div>
+                        <div class="card-footer text-center d-grid gap-2">
+                            <button class="btn btn-primary" type="submit">Registrar</button>
+                        </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

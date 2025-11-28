@@ -1,0 +1,91 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Editar empresa</h5>
+          <a href="/empresas" class="btn btn-outline-secondary btn-sm">Cancelar</a>
+        </div>
+        <div class="card-body">
+          {{#if errorMessage}}
+            <div class="alert alert-danger">{{errorMessage}}</div>
+          {{/if}}
+          <form method="POST" action="/empresas/edit/{{formData.id}}">
+            {{#if formColumns.length}}
+              {{#each formColumns}}
+                {{#if (fieldShouldRender ../formColumns name)}}
+                  <div class="mb-3">
+                    <label for="field-{{name}}" class="form-label">
+                      {{#if (equals name "empresa_sector")}}Giro
+                      {{else if (equals name "giro_sector")}}Giro
+                      {{else if (equals name "giro")}}Giro
+                      {{else if (equals name "giro_empresa")}}Giro
+                      {{else}}{{label}}{{/if}}{{#if required}} <span class="text-danger">*</span>{{/if}}
+                    </label>
+
+                    {{#if (equals name "empresa_sector")}}
+                      <select class="form-select" id="field-empresa_sector" name="empresa_sector" {{#if required}}required{{/if}}>
+                        <option value="">Selecciona un giro</option>
+                        <option value="industrial" {{#if (equals "industrial" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "industrial" (lookup ../formData name))}}selected{{/if}}>Industrial</option>
+                        <option value="servicios" {{#if (equals "servicios" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "servicios" (lookup ../formData name))}}selected{{/if}}>Servicios</option>
+                        <option value="publico" {{#if (equals "publico" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "publico" (lookup ../formData name))}}selected{{/if}}>Público</option>
+                        <option value="privado" {{#if (equals "privado" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "privado" (lookup ../formData name))}}selected{{/if}}>Privado</option>
+                        <option value="otro" {{#if (equals "otro" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "otro" (lookup ../formData name))}}selected{{/if}}>Otro</option>
+                      </select>
+                    {{else if (equals name "giro_sector")}}
+                      <select class="form-select" id="field-empresa_sector" name="empresa_sector" {{#if required}}required{{/if}}>
+                        <option value="">Selecciona un giro</option>
+                        <option value="industrial" {{#if (equals "industrial" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "industrial" (lookup ../formData name))}}selected{{/if}}>Industrial</option>
+                        <option value="servicios" {{#if (equals "servicios" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "servicios" (lookup ../formData name))}}selected{{/if}}>Servicios</option>
+                        <option value="publico" {{#if (equals "publico" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "publico" (lookup ../formData name))}}selected{{/if}}>Público</option>
+                        <option value="privado" {{#if (equals "privado" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "privado" (lookup ../formData name))}}selected{{/if}}>Privado</option>
+                        <option value="otro" {{#if (equals "otro" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "otro" (lookup ../formData name))}}selected{{/if}}>Otro</option>
+                      </select>
+                    {{else if (equals name "giro")}}
+                      <select class="form-select" id="field-empresa_sector" name="empresa_sector" {{#if required}}required{{/if}}>
+                        <option value="">Selecciona un giro</option>
+                        <option value="industrial" {{#if (equals "industrial" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "industrial" (lookup ../formData name))}}selected{{/if}}>Industrial</option>
+                        <option value="servicios" {{#if (equals "servicios" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "servicios" (lookup ../formData name))}}selected{{/if}}>Servicios</option>
+                        <option value="publico" {{#if (equals "publico" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "publico" (lookup ../formData name))}}selected{{/if}}>Público</option>
+                        <option value="privado" {{#if (equals "privado" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "privado" (lookup ../formData name))}}selected{{/if}}>Privado</option>
+                        <option value="otro" {{#if (equals "otro" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "otro" (lookup ../formData name))}}selected{{/if}}>Otro</option>
+                      </select>
+                    {{else if (equals name "giro_empresa")}}
+                      <select class="form-select" id="field-empresa_sector" name="empresa_sector" {{#if required}}required{{/if}}>
+                        <option value="">Selecciona un giro</option>
+                        <option value="industrial" {{#if (equals "industrial" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "industrial" (lookup ../formData name))}}selected{{/if}}>Industrial</option>
+                        <option value="servicios" {{#if (equals "servicios" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "servicios" (lookup ../formData name))}}selected{{/if}}>Servicios</option>
+                        <option value="publico" {{#if (equals "publico" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "publico" (lookup ../formData name))}}selected{{/if}}>Público</option>
+                        <option value="privado" {{#if (equals "privado" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "privado" (lookup ../formData name))}}selected{{/if}}>Privado</option>
+                        <option value="otro" {{#if (equals "otro" (lookup ../formData "empresa_sector"))}}selected{{else if (equals "otro" (lookup ../formData name))}}selected{{/if}}>Otro</option>
+                      </select>
+                    {{else}}
+                      {{#if isTextArea}}
+                        <textarea class="form-control" id="field-{{name}}" name="{{name}}" rows="3" {{#if required}}required{{/if}}>{{lookup ../formData name}}</textarea>
+                      {{else if options}}
+                        <select class="form-select" id="field-{{name}}" name="{{name}}" {{#if required}}required{{/if}}>
+                          <option value="">Selecciona una opción</option>
+                          {{#each options}}
+                            <option value="{{this}}" {{#if (equals this (lookup ../../formData ../name))}}selected{{/if}}>{{this}}</option>
+                          {{/each}}
+                        </select>
+                      {{else}}
+                        <input type="{{inputType}}" class="form-control" id="field-{{name}}" name="{{name}}" value="{{lookup ../formData name}}" {{#if required}}required{{/if}} {{#if maxLength}}maxlength="{{maxLength}}"{{/if}} {{#if step}}step="{{step}}"{{/if}} />
+                      {{/if}}
+                    {{/if}}
+                  </div>
+                {{/if}}
+              {{/each}}
+            {{else}}
+              <div class="alert alert-warning">No se encontraron columnas para empresas. Verifica la base de datos.</div>
+            {{/if}}
+
+            <div class="d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary">Actualizar empresa</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

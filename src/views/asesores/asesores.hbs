@@ -1,0 +1,43 @@
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
+                    <h3 class="text-uppercase mb-0">Asesores</h3>
+                    <a href="/asesores/nuevo" class="btn btn-primary btn-sm">Agregar asesor</a>
+                </div>
+                <div class="card-body">
+                    {{#if successMessage}}
+                        <div class="alert alert-success" role="alert">{{successMessage}}</div>
+                    {{/if}}
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover align-middle mb-0 text-center">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th scope="col">RFC</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Carrera asignada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {{#if asesores.length}}
+                                    {{#each asesores}}
+                                        <tr>
+                                            <td>{{rfc}}</td>
+                                            <td>{{nombre}}</td>
+                                            <td>{{#if carreras}}{{carreras}}{{else}}-{{/if}}</td>
+                                        </tr>
+                                    {{/each}}
+                                {{else}}
+                                    <tr>
+                                        <td colspan="3" class="text-muted">Sin asesores registrados por el momento.</td>
+                                    </tr>
+                                {{/if}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

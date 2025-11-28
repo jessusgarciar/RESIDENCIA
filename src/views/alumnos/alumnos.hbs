@@ -1,0 +1,38 @@
+<div class="container">
+    <div class="row mt-5">
+            <table class="table text-center table-bordered table-hover">
+                <div class="card-header">
+                    <h3 class="text-uppercase text-center p-2">Alumnos</h3>
+                </div>
+                <thead>
+                    <tr class="table-primary">
+                        <th scope="col">N.Control</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Carrera</th>
+                        <th scope="col">Telefono</th>
+                        <th scope="col">RFC Asesor</th>
+                        <th scope="col">Periodo</th>
+                        <th scope="col">Insitucion de Salud</th>
+                        <th scope="col">N. Seguro Social</th>
+                        <th scope="col">Comentario Ciudad</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each alumnos}}
+                        <tr>
+                            <td>{{num_control}}</td>
+                            <td>{{nombre}}</td>
+                            <td>{{carrera}}</td>
+                            <td>{{telefono}}</td>
+                            <td>{{rfc_asesor}}</td>
+                            <td>{{periodo}}</td>
+                            <td>{{institucion_salud}}</td>
+                            <td>{{num_seguro_social}}</td>
+                            <td>{{comentario_ciudad}}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
