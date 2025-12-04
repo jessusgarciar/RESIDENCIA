@@ -6,6 +6,7 @@ package-lock.json
 .env
 .env.local
 .env.*.local
+.env.test
 
 # Logs
 *.log
@@ -14,16 +15,25 @@ yarn-debug.log*
 yarn-error.log*
 register_jefe.log
 soffice_prelim.log
+combined.log
+error.log
 
 # Temporary files
 tmp/
 *.tmp
 *.temp
+.temp
+
+# Testing
+coverage/
+.nyc_output/
+*.lcov
 
 # OS files
 .DS_Store
 Thumbs.db
 desktop.ini
+ehthumbs.db
 
 # IDE
 .vscode/
@@ -31,10 +41,38 @@ desktop.ini
 *.swp
 *.swo
 *~
+.project
+.settings/
+.classpath
 
 # Build files
 dist/
 build/
+out/
 
 # Uploads (if not needed in repo)
 uploads/
+storage/pdfs/*.pdf
+storage/jefe/**/*.pdf
+src/public/pdfs/**/*.pdf
+!src/public/pdfs/.gitkeep
+
+# Document templates (keep templates, ignore generated)
+*.docx.backup
+~$*.docx
+
+# Database dumps
+*.sql.gz
+*.dump
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache

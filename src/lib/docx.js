@@ -5,6 +5,7 @@ import Docxtemplater from 'docxtemplater';
 import libre from 'libreoffice-convert';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import { trackPdfGeneration } from '../middleware/metrics.js';
 const execFileAsync = promisify(execFile);
 
 function convertDocxBufferToPdf(buf) {
@@ -69,6 +70,7 @@ function ensureSofficeOnPath() {
 
 export async function renderDocxToPdf(templatePath, data, outPdfPath) {
   // Returns an object { ok: true, path, method: 'docx'|'docx-only'|'pdf-overlay' }
+  const startTime = Date.now();
   let tmpDocx = null;
   let tmpPdf = null;
   
@@ -159,6 +161,9 @@ export async function renderDocxToPdf(templatePath, data, outPdfPath) {
         await cleanupTempFile(tmpPdf);
       }
       
+      const timeMs = Date.now() - startTime;
+      trackPdfGeneration(true, timeMs, { template: templatePath, output: outPdfPath });
+      
       return { ok: true, path: outPdfPath, method: 'docx' };
     }
 
@@ -178,6 +183,9 @@ export async function renderDocxToPdf(templatePath, data, outPdfPath) {
     // Cleanup on error
     if (tmpDocx) await cleanupTempFile(tmpDocx);
     if (tmpPdf && tmpPdf !== tmpDocx) await cleanupTempFile(tmpPdf);
+    
+    const timeMs = Date.now() - startTime;
+    trackPdfGeneration(false, timeMs, { template: templatePath, error: String(err) });
     
     return { ok: false, error: String(err) };
   }

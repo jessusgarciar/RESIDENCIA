@@ -12,8 +12,10 @@ import empresasroutes from './routes/empresas.routes.js';
 import alumnosroutes from './routes/alumnos.routes.js';
 import asesoresroutes from './routes/asesores.routes.js';
 import solicitudesroutes from './routes/solicitudes.routes.js';
+import healthroutes from './routes/health.routes.js';
 import { ensureSofficeOnPath } from './lib/docx.js';
 import { resolveNotificationTarget, countPendingNotifications } from './lib/notifications.js';
+import { performanceTracker } from './middleware/metrics.js';
 import logger from './lib/logger.js';
 
 // Load environment variables
@@ -84,6 +86,9 @@ app.use(morgan('dev'));
 // Allow larger payloads for PDF uploads (base64 in JSON)
 app.use(express.urlencoded({ extended: false, limit: '20mb' }));
 app.use(express.json({ limit: '20mb' }));
+
+// Performance tracking middleware
+app.use(performanceTracker);
 
 // Session configuration with security
 if (!process.env.SESSION_SECRET) {
@@ -207,14 +212,11 @@ app.get('/', async (req, res) => {
 });
 
 
+app.use(healthroutes);
 app.use(loginroutes);
-
 app.use(formroutes);
-
 app.use(empresasroutes);
-
 app.use(alumnosroutes);
-
 app.use(asesoresroutes);
 app.use(solicitudesroutes);
 
