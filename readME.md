@@ -4,7 +4,6 @@ Sistema web para la gestión integral de residencias profesionales en institucio
 
 ![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)
 ![Express](https://img.shields.io/badge/Express-v5.1-blue.svg)
-![License](https://img.shields.io/badge/license-ISC-orange.svg)
 
 ## 🎯 Características Principales
 
@@ -278,9 +277,9 @@ npm run check:libreoffice  # Verificar LibreOffice
 
 - [ ] Frontend moderno con React/Vue
 - [ ] API REST documentada con Swagger
-- [ ] Drag & drop para archivos PDF
-- [ ] Validación en tiempo real
-- [ ] Dashboard con métricas avanzadas
+- [ ] Crear rol "Asesor"
+- [ ] Generar documentos de Informe Semestral de Residencias Profesionales por competencias, Formato de registro de asesoría de Residencias Profesionales por competencias (8), Formato de evaluación y seguimiento de residencias profesionales, Formato de evaluación de reporte de residencias profesionales
+- [ ] Dashboard con métricas avanzadas en la pestaña "Reportes" con informacion de egresados y alumnos en residencias
 - [ ] Integración con servicios externos (email, SMS)
 
 ## 👥 Autor
