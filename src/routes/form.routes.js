@@ -921,7 +921,7 @@ router.post('/documento-preliminar', async (req, res) => {
                     const e = sanitizeData(erows[0]);
                     data.empresa_id = e.id;
                     data.empresa_nombre = data.empresa_nombre || e.nombre || '';
-                    data.giro = data.giro || e.giro_sector || e.giro || '';
+                    data.giro = data.giro || e.giro || e.giro_sector || e.empresa_sector || '';
                     data.empresa_sector = data.empresa_sector || e.empresa_sector || '';
                     data.domicilio_telefono = data.domicilio_telefono || [e.domicilio || '', e.telefono_empresa || e.telefono || ''].filter(Boolean).join(' | ');
                     data.actividades_empresa = data.actividades_empresa || e.mision || e.actividades || '';
@@ -936,6 +936,7 @@ router.post('/documento-preliminar', async (req, res) => {
                         telefono: e.telefono_empresa || e.telefono || '',
                         actividad: e.mision || e.actividades || '',
                         sector: e.empresa_sector || '',
+                        giro: e.giro || e.giro_sector || e.empresa_sector || '',
                         titular_nombre: e.titular_nombre || '',
                         titular_puesto: e.titular_puesto || '',
                         firmante_nombre: e.firmante_nombre || '',
@@ -950,7 +951,7 @@ router.post('/documento-preliminar', async (req, res) => {
                     const e = sanitizeData(erows2[0]);
                     data.empresa_id = e.id;
                     data.empresa_nombre = e.nombre || data.empresa_nombre || '';
-                    data.giro = data.giro || e.giro_sector || '';
+                    data.giro = data.giro || e.giro || e.giro_sector || e.empresa_sector || '';
                     data.empresa_sector = data.empresa_sector || e.empresa_sector || '';
                     data.domicilio_telefono = data.domicilio_telefono || [e.domicilio || '', e.telefono_empresa || ''].filter(Boolean).join(' | ');
                     data.actividades_empresa = data.actividades_empresa || e.mision || '';
@@ -965,6 +966,7 @@ router.post('/documento-preliminar', async (req, res) => {
                         telefono: e.telefono_empresa || '',
                         actividad: e.mision || '',
                         sector: e.empresa_sector || '',
+                        giro: e.giro || e.giro_sector || e.empresa_sector || '',
                         titular_nombre: e.titular_nombre || '',
                         titular_puesto: e.titular_puesto || '',
                         firmante_nombre: e.firmante_nombre || '',

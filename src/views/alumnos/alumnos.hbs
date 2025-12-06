@@ -4,14 +4,29 @@
                 <div class="card-header">
                     <h3 class="text-uppercase text-center p-2">Alumnos</h3>
                 </div>
+
+            {{#if (equals rol "admin")}}
+            <div class="d-flex justify-content-between mb-3">
+                <div>
+                    <button id="btnImportCSV" class="btn btn-info me-2" data-bs-toggle="modal" data-bs-target="#importCSVModal">
+                        <i class="fa-solid fa-file-import"></i> Importar CSV
+                    </button>
+                    <button id="btnExportCSV" class="btn btn-warning">
+                        <i class="fa-solid fa-file-export"></i> Exportar CSV
+                    </button>
+                </div>
+                <button id="btnAddUser" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                    <i class="fa-solid fa-user-plus"></i> Agregar usuario
+                </button>
+            </div>
+            {{/if}}
+
                 <thead>
                     <tr class="table-primary">
-                        <th scope="col">N.Control</th>
+                        <th scope="col">Numero de Control</th>
                         <th scope="col">Nombre</th>
                         <th scope="col">Carrera</th>
                         <th scope="col">Telefono</th>
-                        <th scope="col">RFC Asesor</th>
-                        <th scope="col">Periodo</th>
                         <th scope="col">Insitucion de Salud</th>
                         <th scope="col">N. Seguro Social</th>
                         <th scope="col">Comentario Ciudad</th>                        
@@ -24,8 +39,6 @@
                             <td>{{nombre}}</td>
                             <td>{{carrera}}</td>
                             <td>{{telefono}}</td>
-                            <td>{{rfc_asesor}}</td>
-                            <td>{{periodo}}</td>
                             <td>{{institucion_salud}}</td>
                             <td>{{num_seguro_social}}</td>
                             <td>{{comentario_ciudad}}</td>
@@ -36,3 +49,268 @@
         </div>
     </div>
 </div>
+
+<!-- Modal: Importar CSV -->
+<div class="modal fade" id="importCSVModal" tabindex="-1" aria-labelledby="importCSVModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importCSVModalLabel">Importar alumnos desde CSV</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Sube un archivo CSV con las siguientes columnas (en orden):</p>
+                <code>num_control,username,nombre,carrera,telefono,email_alumno,domicilio,institucion_salud,num_seguro_social,comentario_ciudad</code>
+                <p class="mt-3"><strong>Nota:</strong> La contraseña se generará automáticamente para cada usuario.</p>
+                <input type="file" class="form-control" id="csvFileInput" accept=".csv">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitImportCSVBtn">Importar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Agregar usuario -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addUserModalLabel">Agregar usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="num_control_input" class="form-label">Numero de Control</label>
+                            <input type="text" class="form-control" id="num_control_input" name="num_control" placeholder="Ej. 181050063" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="username_input" class="form-label">Usuario (username)</label>
+                            <input type="text" class="form-control" id="username_input" name="username" placeholder="usuario" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="rol_input" class="form-label">Rol</label>
+                            <select id="rol_input" name="rol" class="form-select">
+                                <option value="alumno" selected>alumno</option>
+                                <option value="jefe_departamento">jefe_departamento</option>
+                                <option value="admin">admin</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="password_input" class="form-label">Contraseña</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="password_input" name="password" required readonly>
+                                <button class="btn btn-outline-secondary" type="button" id="generatePasswordBtn">Generar</button>
+                                <button class="btn btn-outline-secondary" type="button" id="copyPasswordBtn">Copiar</button>
+                            </div>
+                            <div class="form-text">La contraseña se mostrará aquí y se enviará al crear el usuario. Guárdala en un lugar seguro.</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="nombre_input" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="nombre_input" name="nombre" placeholder="Nombre del alumno" spellcheck="true" lang="es-MX">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="carrera_input" class="form-label">Carrera</label>
+                            <select id="carrera_input" name="carrera" class="form-select">
+                                <option value="">Selecciona una carrera</option>
+                                <option value="Ingenieria en Tecnologias de la Informacion y Comunicacion">Ingenieria en Tecnologias de la Informacion y Comunicacion</option>
+                                <option value="Ingenieria en Mecatronica">Ingenieria en Mecatronica</option>
+                                <option value="Ingenieria en Logistica">Ingenieria en Logistica</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="institucion_input" class="form-label">Institución de salud</label>
+                            <select id="institucion_input" name="institucion_salud" class="form-select">
+                                <option value="IMSS">IMSS</option>
+                                <option value="ISSSTE">ISSSTE</option>
+                                <option value="OTRO">OTRO</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="numseg_input" class="form-label">Numero de Seguro Social</label>
+                            <input type="text" class="form-control" id="numseg_input" name="num_seguro_social" placeholder="Número de seguro social">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="domicilio_input" class="form-label">Domicilio</label>
+                            <input type="text" class="form-control" id="domicilio_input" name="domicilio" placeholder="Calle, número, colonia" spellcheck="true" lang="es-MX">
+                        </div>
+                        <div class="col-12">
+                            <label for="comentario_input" class="form-label">Comentario Ciudad</label>
+                            <textarea id="comentario_input" name="comentario_ciudad" class="form-control" rows="2" placeholder="Comentario sobre ciudad" spellcheck="true" lang="es-MX"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email_input" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email_input" name="email_alumno" placeholder="correo@dominio.com">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefono_input" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="telefono_input" name="telefono" placeholder="(449) 123-4567">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="submitAddUserBtn">Crear usuario</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        function generatePassword(len = 12) {
+            const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*()-_=+';
+            const arr = new Uint32Array(len);
+            if (window.crypto && window.crypto.getRandomValues) {
+                window.crypto.getRandomValues(arr);
+            } else {
+                for (let i = 0; i < len; i++) arr[i] = Math.floor(Math.random() * chars.length);
+            }
+            return Array.from(arr).map(v => chars[v % chars.length]).join('');
+        }
+
+        const genBtn = document.getElementById('generatePasswordBtn');
+        const pwdInput = document.getElementById('password_input');
+        const copyBtn = document.getElementById('copyPasswordBtn');
+        const submitBtn = document.getElementById('submitAddUserBtn');
+
+        genBtn?.addEventListener('click', () => {
+            pwdInput.value = generatePassword(12);
+            pwdInput.focus();
+            pwdInput.select();
+        });
+
+        copyBtn?.addEventListener('click', async () => {
+            if (!pwdInput.value) return;
+            try {
+                await navigator.clipboard.writeText(pwdInput.value);
+                alert('Contraseña copiada al portapapeles');
+            } catch (e) {
+                alert('No se pudo copiar la contraseña: ' + e.message);
+            }
+        });
+
+        submitBtn?.addEventListener('click', async () => {
+            const form = document.getElementById('addUserForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const payload = {
+                num_control: document.getElementById('num_control_input').value.trim(),
+                username: document.getElementById('username_input').value.trim(),
+                rol: document.getElementById('rol_input').value,
+                password: document.getElementById('password_input').value.trim(),
+                nombre: document.getElementById('nombre_input').value.trim(),
+                email_alumno: document.getElementById('email_input').value.trim(),
+                telefono: document.getElementById('telefono_input').value.trim(),
+                carrera: document.getElementById('carrera_input').value.trim(),
+                institucion_salud: document.getElementById('institucion_input').value,
+                num_seguro_social: document.getElementById('numseg_input').value.trim(),
+                comentario_ciudad: document.getElementById('comentario_input').value.trim(),
+                domicilio: document.getElementById('domicilio_input').value.trim()
+            };
+
+            if (!payload.password) {
+                if (!confirm('No se ha generado una contraseña. ¿Deseas generar una automáticamente?')) return;
+                payload.password = generatePassword(12);
+            }
+
+            try {
+                submitBtn.disabled = true;
+                const resp = await fetch('/alumnos/create-user', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await resp.json();
+                if (!resp.ok) throw new Error(data.error || 'Error creando usuario');
+                // Success
+                alert('Usuario creado correctamente. Usuario: ' + payload.username + '\nContraseña: ' + payload.password);
+                // Close modal
+                const modalEl = document.getElementById('addUserModal');
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
+                // Optionally clear form
+                form.reset();
+            } catch (err) {
+                alert('Error: ' + (err.message || err));
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Export CSV handler
+        const exportBtn = document.getElementById('btnExportCSV');
+        exportBtn?.addEventListener('click', async () => {
+            try {
+                const resp = await fetch('/alumnos/export-csv');
+                if (!resp.ok) throw new Error('Error exportando CSV');
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'alumnos_credenciales_' + Date.now() + '.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            } catch (err) {
+                alert('Error exportando CSV: ' + err.message);
+            }
+        });
+
+        // Import CSV handler
+        const importBtn = document.getElementById('submitImportCSVBtn');
+        const csvFileInput = document.getElementById('csvFileInput');
+        importBtn?.addEventListener('click', async () => {
+            const file = csvFileInput.files[0];
+            if (!file) {
+                alert('Selecciona un archivo CSV');
+                return;
+            }
+            try {
+                importBtn.disabled = true;
+                const formData = new FormData();
+                formData.append('csv', file);
+                const resp = await fetch('/alumnos/import-csv', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!resp.ok) {
+                    const data = await resp.json();
+                    throw new Error(data.error || 'Error importando CSV');
+                }
+                
+                // El servidor devuelve el CSV con credenciales directamente
+                const blob = await resp.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'credenciales_' + Date.now() + '.csv';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert('CSV importado correctamente. Descargando archivo con credenciales...');
+                const modalEl = document.getElementById('importCSVModal');
+                const modal = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+                modal.hide();
+                location.reload();
+            } catch (err) {
+                alert('Error importando CSV: ' + err.message);
+            } finally {
+                importBtn.disabled = false;
+            }
+        });
+    })();
+</script>

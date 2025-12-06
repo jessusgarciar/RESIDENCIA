@@ -1,0 +1,4 @@
+num_control,username,nombre,carrera,telefono,email_alumno,domicilio,institucion_salud,num_seguro_social,comentario_ciudad
+201050063,201050063,Juan Manuel Pérez García,Ingenieria en Tecnologias de la Informacion y Comunicacion,4491234567,juan.perez@ejemplo.com,Calle Principal #123 Col. Centro,IMSS,12345678901,Aguascalientes
+201050153,201050153,María Elena López Rodríguez,Ingenieria en Mecatronica,4499876543,maria.lopez@ejemplo.com,Av. Tecnológico #456 Col. Industrial,ISSSTE,98765432109,Pabellón de Arteaga
+191050085,191050085,Carlos Alberto Sánchez Martínez,Ingenieria en Logistica,4497654321,carlos.sanchez@ejemplo.com,Blvd. Universidad #789 Col. Universitaria,OTRO,55566677788,Aguascalientes

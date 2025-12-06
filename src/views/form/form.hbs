@@ -73,7 +73,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="nombre_proyecto" class="form-label">Nombre del proyecto</label>
-                                <input type="text" class="form-control" id="nombre_proyecto" value="{{docDefaults.nombre_proyecto}}">
+                                <input type="text" class="form-control" id="nombre_proyecto" value="{{docDefaults.nombre_proyecto}}" spellcheck="true" lang="es-MX">
                             </div>
                             <div class="col-md-3">
                                 <label for="fecha_solicitud" class="form-label">Fecha de solicitud</label>
@@ -108,23 +108,23 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="area_departamento" class="form-label">Área / departamento</label>
-                                <input type="text" class="form-control" id="area_departamento" value="{{docDefaults.area_departamento}}">
+                                <input type="text" class="form-control" id="area_departamento" value="{{docDefaults.area_departamento}}" spellcheck="true" lang="es-MX">
                             </div>
                             <div class="col-12">
                                 <label for="objetivos" class="form-label">Objetivos</label>
-                                <textarea class="form-control" id="objetivos" rows="3">{{docDefaults.objetivos}}</textarea>
+                                <textarea class="form-control" id="objetivos" rows="3" spellcheck="true" lang="es-MX">{{docDefaults.objetivos}}</textarea>
                             </div>
                             <div class="col-12">
                                 <label for="delimitacion" class="form-label">Delimitación</label>
-                                <textarea class="form-control" id="delimitacion" rows="3">{{docDefaults.delimitacion}}</textarea>
+                                <textarea class="form-control" id="delimitacion" rows="3" spellcheck="true" lang="es-MX">{{docDefaults.delimitacion}}</textarea>
                             </div>
                             <div class="col-12">
                                 <label for="justificacion" class="form-label">Justificación</label>
-                                <textarea class="form-control" id="justificacion" rows="3">{{docDefaults.justificacion}}</textarea>
+                                <textarea class="form-control" id="justificacion" rows="3" spellcheck="true" lang="es-MX">{{docDefaults.justificacion}}</textarea>
                             </div>
                             <div class="col-12">
                                 <label for="descripcion_actividades" class="form-label">Descripción de actividades</label>
-                                <textarea class="form-control" id="descripcion_actividades" rows="3">{{docDefaults.descripcion_actividades}}</textarea>
+                                <textarea class="form-control" id="descripcion_actividades" rows="3" spellcheck="true" lang="es-MX">{{docDefaults.descripcion_actividades}}</textarea>
                             </div>
                         </div>
                     </div>
@@ -174,7 +174,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="contacto_empresa" class="form-label">Contacto (editable)</label>
-                                <input type="text" class="form-control" id="contacto_empresa" value="{{docDefaults.contacto_empresa}}">
+                                <input type="text" class="form-control" id="contacto_empresa" value="{{docDefaults.contacto_empresa}}" spellcheck="true" lang="es-MX">
                             </div>
                         </div>
 
@@ -229,22 +229,22 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="nombre_firmante" class="form-label">Nombre del firmante</label>
-                                <input type="text" class="form-control" id="nombre_firmante" value="{{docDefaults.nombre_firmante}}">
+                                <input type="text" class="form-control" id="nombre_firmante" value="{{docDefaults.nombre_firmante}}" spellcheck="true" lang="es-MX">
                             </div>
                             <div class="col-md-6">
                                 <label for="puesto_firmante" class="form-label">Puesto del firmante</label>
-                                <input type="text" class="form-control" id="puesto_firmante" value="{{docDefaults.puesto_firmante}}">
+                                <input type="text" class="form-control" id="puesto_firmante" value="{{docDefaults.puesto_firmante}}" spellcheck="true" lang="es-MX">
                             </div>
                         </div>
 
                         <div class="row g-3 mt-2">
                             <div class="col-md-6">
                                 <label for="nombre_asesor_externo" class="form-label">Nombre asesor externo</label>
-                                <input type="text" class="form-control" id="nombre_asesor_externo" value="{{docDefaults.nombre_asesor_externo}}">
+                                <input type="text" class="form-control" id="nombre_asesor_externo" value="{{docDefaults.nombre_asesor_externo}}" spellcheck="true" lang="es-MX">
                             </div>
                             <div class="col-md-6">
                                 <label for="puesto_asesor_externo" class="form-label">Puesto asesor externo</label>
-                                <input type="text" class="form-control" id="puesto_asesor_externo" value="{{docDefaults.puesto_asesor_externo}}">
+                                <input type="text" class="form-control" id="puesto_asesor_externo" value="{{docDefaults.puesto_asesor_externo}}" spellcheck="true" lang="es-MX">
                             </div>
                         </div>
                     </div>
@@ -503,6 +503,8 @@
             textarea.className = 'form-control actividad-desc';
             textarea.rows = 2;
             textarea.value = data.descripcion || '';
+            textarea.setAttribute('spellcheck', 'true');
+            textarea.setAttribute('lang', 'es-MX');
             textarea.addEventListener('input', handleCronogramaChange);
             tdDesc.appendChild(textarea);
             tr.appendChild(tdDesc);
@@ -624,7 +626,7 @@
                 const fields = {
                     empresa_id: data.id || id,
                     empresa_nombre: data.nombre || '',
-                    giro: data.giro || '',
+                    giro: data.giro || data.giro_sector || data.empresa_sector || '',
                     empresa_sector: data.empresa_sector || '',
                     empresa_rfc: data.rfc || data.rfc_empresa || '',
                     empresa_domicilio: data.domicilio || '',
@@ -658,6 +660,7 @@
                     telefono: fields.empresa_telefono,
                     actividad: fields.empresa_mision,
                     sector: fields.empresa_sector,
+                    giro: fields.giro,
                     titular_nombre: fields.empresa_titular_nombre,
                     titular_puesto: fields.empresa_titular_puesto,
                     firmante_nombre: data.firmante_nombre || data.firmante || '',
